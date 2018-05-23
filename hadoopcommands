@@ -1,0 +1,19 @@
+
+# to reboot yarn after configuartion changes, just stop and start it:
+sbin/stop-yarn.sh
+sbin/start-yarn.sh
+
+# to check that Hadoop is up and running, type:
+jps
+# and make sure the following are running: NameNode, DataNode ResourceManager NodeManager SecondaryNameNode
+
+
+
+# setting queues in hadoop with capacity scheduler
+hadoop jar  jarfile.jar wordcount.Main  -D mapreduce.job.queuename=prod /mapreduce/input mapreduce/output3
+
+localhost:8088/cluster
+
+
+
+
