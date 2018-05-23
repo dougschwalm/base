@@ -4,36 +4,164 @@ Hive 0.10, 0.11 and above
 can putty into the vm to ssh into the sandbox  (127.0.0.1 port 2222)
   login as root, and password is hadoop
   
->  hadoop fs -ls / 
-will show root ...
-I'll alias h as "hadoop fs -" prefix
-
+# sample data:
 
 mkdir /home/pluralsight
 cd /home/pluralsight
-wget http://www.grouplens.org/system/files/ml-100k.zip       (or get from pluralsight)
+wget http://www.grouplens.org/system/files/ml-100k.zip      # (or get from pluralsight)
 unzip ml-100k.zip
 
 hmkdir /pluralsight/movies
 hmkdir /pluralsight/userinfo
 hls /pluralsight
+hfput u.item /pluralsight/movies
+hfput u.info /pluralsight/userinfo
+hfcp /pluralsight/movies/u.item /pluralsight
+hfls /pluralsight
+hfrm /plrualisght/u.item
+hfmkdir /pluralsight/test
+hfcp /pluralsight/movies/u.item /pluralsight/userinfo/u.info  /pluralsight/test
+hfrmr -skipTrash /pluralsight/test
+hfcat /pluralsight/movies/* | less
 
-hput u.item /pluralsight/movies
-hput u.info /pluralsight/userinfo
-
-hcp /pluralsight/movies/u.item /pluralsight
-hls /pluralsight
-hrm /plrualisght/u.item
-
-hmkdir /pluralsight/test
-hcp /pluralsight/movies/u.item /pluralsight/userinfo/u.info  /pluralsight/test
-hrmr -skipTrash /pluralsight/test
-
-hcat /pluralsight/movies/* | less
-
-hadoop.apache.org ... lookup shell system guide
+#HiveQL is a query langauge that interfaces with a Metastore (often a MySQL relational database 
+#that has partition and file location and otehr metadata) , as well as with MapReduce to execute the desired commands)
 
 
 
+SELECT * FROM my_table LIMIT 100 ;   # won't need mapreduce at all ... just samples tables ;
 
+Interfaces ->  HiveQL  ->   Hive ->  Metastore=HiveWarehouse  & MapReduce/HDFS
+JDBC | ODBC
+Hive CLI
+Hive Web UI
+HDInsight
+Hive imposes structure on read , not on write  so no need to have structured data stored in hadoop
+
+Hive divides data into Internal Warehouse vs External data:
+
+In the metastore are abstractions of the data that divide theim into 
+ Databases > Tables  > Partitions (value of column) > Buckets (clusters)  ... dropping data deletes data
+ 
+ External Tables are managed only with meta-data, anywhere in hadoop or incloud ..dropping table only deletes metadata
+ 
+ 
+ 
+ SELECT
+   f(col1)   AS nvar1
+ , f(col2)   AS nvar2
+ , f(col3)   AS nvar3
+ FROM
+   some_table
+ WHERE
+   wehre_condition
+ LIMIT
+   number_of_records
+ 
+ SELECT DISTINCT         # include or exclude dcuplicate records
+ 
+ HIVE vs SQL:   
+ * HIVE can specify columns using Java regex    SELECT '(ID|NAME)?+.+'   FROM some_table  (exclues ID and NAME)
+ * FROM and SELECT clauses are interchangable ... multitable insert
+ * HIVE requires explicit termination with ;
+ * Subqueries:  Hive allows in FROM clauses, but not correlated subquery as part of select
+ 
+ SELECT mycol 
+ FROM (
+   SELECT cola + colb as mycol
+   FROM some_table ;
+   ) subq ;
+ 
+ UNION ALL             returns results from all tables...# cols and names have to match from all queries:
+SELECT t3.mycol
+FROM (
+ SELECT col_a+col_b AS mycol
+ FROM some_table
+ UNION ALL
+ SELECT col_y AS mycol
+ FROM another_table ;
+ ) t3
+ JOIN t4 ON (t4.col_x = t3.mycol) ;
+ 
+
+
+ # Warehouse will store data definition that is loaded into hive 
+ /hive/warehouse   #actual path defined in HIVE configuration
+
+ # similar to namespase
+ CREATE DATABASE
+/hive/warehouse/marketing.db/            directory with metadata
+/hive/warehouse/finance.db/
+ 
+CREATE DATABSE|SCHEMA) [IF NOT EXISTS} database_name
+[COMMENT some_comment]
+[LOCATION hdfs_path]
+[WITH DBPROPERTIES (property_name=property_value, ...) ] 
+;
+ 
+USE db_name ;
+
+DROP (DATABASE|SCHEMA) [IF EXISTS] database_name ;
+ 
+# https://www.cloudera.com/documentation/enterprise/5-8-x/topics/impala_create_table.html
+CREATE [EXTERNAL] TABLE [IF NOT EXISTS] [db_name.]table_name
+                  [col_name datatype [COMMENT col_comment], ...)]
+  [PARTITIONED BY (col_name datatype [COMMENT col_comment], ...)]
+  [ROW FORMAT row_format] [STORED AS file_format]
+  [LOCATION hdfs_path]
+  [TBLPROPERTIES (property_name=property_value, ...)]
+ ;
+ 
+some additional details available 
+partitioning works different for internal vs external tables
+partitioning helps efficiency when using where clauses that can leverage the partitioned structure. (internal only?)
+ 
+ 
+ # Internal Table ... location specifies place where hive will put data.   metadata doen first, then loaded
+ CREATE TABLE mytable  (key1 INT, date STRING, var1 INT)
+ ROW FORMAT DELIMITED FIELDS TERMAINTED BY `,'
+ STORED AS TEXTFILE
+ LOCATION `/hive/path/mytable' 
+ ;
+ LOAD DATA INPATH 'hdfs:/path/folder/data.txt' INTO TABLE mytable 
+ # load can also be done in hdfs:   hadoop fs -put /path/data/data.txt hdfs://hname:10001/hive/path/mytable
+ 
+ 
+ 
+ #External Table
+ CREATE EXTERNAL TABLE myexttable (key1 INT, date STRING, var1 INT)
+ ROW FORMAT DELIMITED FIELDS TERMAINTED BY `,'
+ STORED AS TEXTFILE
+ LOCATION `/hive/path/myexttable' 
+;
+LOAD DATA INPATH 'hdfs:/path/folder/data.txt' INTO TABLE myexttable
+
+* LOAD DATA moves data from hdfs into warehouse, but 
+* LOAD DATA copies data from local source into warehouse
+* LOAD EXTERNAL
+
+
+/user/hive/warehouse 
+hive
+hive> show databases ;
+hive> show tables ; # shows tables in default database ;
+hive> describe sample_07 ;
+hive> descirbe extended sample_07 ;
+hive> describe formatted sample_07 ;
+
+hive> SELECT * FROM users LIMIT 100 ;
+
+
+CREATE TABLE AS  (ctas)
+CREATE TABLE  table
+STORED AS filename
+AS SELECT COUNT(*) , var                /* organic variable _c0 will be created with counts */
+AS SELECT COUNT(*) cnt , var            /* count variable excplicity named cnt */
+ FROM users
+ GROUP BY occupation
+ ;
+
+
+CREATE TABLE  new_table 
+  LIKE  previous table                           /*empty shell of table */
 
