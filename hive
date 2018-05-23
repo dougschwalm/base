@@ -1,0 +1,39 @@
+Hive 0.10, 0.11 and above 
+(hortonworks, then sandbox, vm sandbox (others are ok), click start on use sandbox)
+(127.0.0.1:8000/about   is the sandbox hue 2.2.0)
+can putty into the vm to ssh into the sandbox  (127.0.0.1 port 2222)
+  login as root, and password is hadoop
+  
+>  hadoop fs -ls / 
+will show root ...
+I'll alias h as "hadoop fs -" prefix
+
+
+mkdir /home/pluralsight
+cd /home/pluralsight
+wget http://www.grouplens.org/system/files/ml-100k.zip       (or get from pluralsight)
+unzip ml-100k.zip
+
+hmkdir /pluralsight/movies
+hmkdir /pluralsight/userinfo
+hls /pluralsight
+
+hput u.item /pluralsight/movies
+hput u.info /pluralsight/userinfo
+
+hcp /pluralsight/movies/u.item /pluralsight
+hls /pluralsight
+hrm /plrualisght/u.item
+
+hmkdir /pluralsight/test
+hcp /pluralsight/movies/u.item /pluralsight/userinfo/u.info  /pluralsight/test
+hrmr -skipTrash /pluralsight/test
+
+hcat /pluralsight/movies/* | less
+
+hadoop.apache.org ... lookup shell system guide
+
+
+
+
+
