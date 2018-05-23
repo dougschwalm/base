@@ -14,6 +14,64 @@ hadoop jar  jarfile.jar wordcount.Main  -D mapreduce.job.queuename=prod /mapredu
 
 localhost:8088/cluster
 
+# Hadoop common commands
+# http://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/CommandsManual.html
+alias harchive  "hadoop archive"
+alias hcknat    "hadoop checknative"
+alias hclpath   "hadoop classpath" 
+alias hcred     "hadoop credential" 
+alias hdistcp   "hadoop distcp"
+alias hfs       "hadoop fs" 
+alias hjar      "hadoop jar" 
+alias hkey      "hadoop key" 
+alias htrace    "hadoop trace"
+alias hver      "hadoop version"
+alias hclname   "hadoop CLASSNAME"
+alias hevar     "hadoop envvars"
 
+# Hadoop common command common options
+#  -archives ; -conf ; -D prop=val  ; -files ; -fs ; -jt ; -libjars
 
+# hadoop fs   commands 
+# http://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/FileSystemShell.html
+alias hfcat     "hadoop fs -cat"
+alias hfcksum   "hadoop fs -checksum"
+alias hf     "hadoop fs -chgrp"
+alias hf     "hadoop fs -chmod"
+alias hf     "hadoop fs -chown"
+alias hf     "hadoop fs -count"
+alias hf     "hadoop fs -cp"
+alias hf     "hadoop fs -createSnapshot"
+alias hf     "hadoop fs -deleteSnapshot"
+alias hf     "hadoop fs -df"
+alias hf     "hadoop fs -du"
+alias hf     "hadoop fs -dus"
+alias hf     "hadoop fs -expunge"
+alias hf     "hadoop fs -find"
+alias hf     "hadoop fs -get"
+alias hf     "hadoop fs -getfacl"
+alias hf     "hadoop fs -getfattr"
+alias hf     "hadoop fs -getmerge"
+alias hf     "hadoop fs -help"
+alias hfls   "hadoop fs -ls"   # ls
+alias hf     "hadoop fs -lsr"
+alias hf     "hadoop fs -mkdir"
+alias hf     "hadoop fs -moveFromLocal"
+alias hf     "hadoop fs -moveToLocal"
+alias hf     "hadoop fs -mv"
+alias hf     "hadoop fs -put"
+alias hf     "hadoop fs -renameSnapshot"
+alias hf     "hadoop fs -rm"
+alias hf     "hadoop fs -rmdir"
+alias hf     "hadoop fs -rmr"
+alias hf     "hadoop fs -setfacl"
+alias hf     "hadoop fs -setfattr"
+alias hf     "hadoop fs -setrep"
+alias hf     "hadoop fs -stat"
+alias hf     "hadoop fs -tail"
+alias hf     "hadoop fs -test"
+alias hf     "hadoop fs -text"
+alias hf     "hadoop fs -touchz"
+alias hf     "hadoop fs -truncate"
+alias hf     "hadoop fs -usage"
 
