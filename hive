@@ -1,10 +1,10 @@
-Hive 0.10, 0.11 and above 
-(hortonworks, then sandbox, vm sandbox (others are ok), click start on use sandbox)
-(127.0.0.1:8000/about   is the sandbox hue 2.2.0)
-can putty into the vm to ssh into the sandbox  (127.0.0.1 port 2222)
-  login as root, and password is hadoop
+-- Hive 0.10, 0.11 and above 
+-- (hortonworks, then sandbox, vm sandbox (others are ok), click start on use sandbox)
+-- (127.0.0.1:8000/about   is the sandbox hue 2.2.0)
+-- can putty into the vm to ssh into the sandbox  (127.0.0.1 port 2222)
+--  login as root, and password is hadoop
   
-# sample data:
+-- sample data:
 
 mkdir /home/pluralsight
 cd /home/pluralsight
@@ -24,47 +24,47 @@ hfcp /pluralsight/movies/u.item /pluralsight/userinfo/u.info  /pluralsight/test
 hfrmr -skipTrash /pluralsight/test
 hfcat /pluralsight/movies/* | less
 
-#HiveQL is a query langauge that interfaces with a Metastore (often a MySQL relational database 
-#that has partition and file location and otehr metadata) , as well as with MapReduce to execute the desired commands)
+-- HiveQL is a query langauge that interfaces with a Metastore (often a MySQL relational database 
+-- that has partition and file location and otehr metadata) , as well as with MapReduce to execute the desired commands)
 
 
 
 SELECT * FROM my_table LIMIT 100 ;   # won't need mapreduce at all ... just samples tables ;
 
-Interfaces ->  HiveQL  ->   Hive ->  Metastore=HiveWarehouse  & MapReduce/HDFS
-JDBC | ODBC
-Hive CLI
-Hive Web UI
-HDInsight
-Hive imposes structure on read , not on write  so no need to have structured data stored in hadoop
+-- Interfaces ->  HiveQL  ->   Hive ->  Metastore=HiveWarehouse  & MapReduce/HDFS
+-- JDBC | ODBC
+-- Hive CLI
+-- Hive Web UI
+-- HDInsight
+-- Hive imposes structure on read , not on write  so no need to have structured data stored in hadoop
 
-Hive divides data into Internal Warehouse vs External data:
+-- Hive divides data into Internal Warehouse vs External data:
 
-In the metastore are abstractions of the data that divide theim into 
- Databases > Tables  > Partitions (value of column) > Buckets (clusters)  ... dropping data deletes data
+-- In the metastore are abstractions of the data that divide theim into 
+--  Databases > Tables  > Partitions (value of column) > Buckets (clusters)  ... dropping data deletes data
  
- External Tables are managed only with meta-data, anywhere in hadoop or incloud ..dropping table only deletes metadata
+--  External Tables are managed only with meta-data, anywhere in hadoop or incloud ..dropping table only deletes metadata
  
  
  
- SELECT
+SELECT
    f(col1)   AS nvar1
  , f(col2)   AS nvar2
  , f(col3)   AS nvar3
- FROM
+FROM
    some_table
- WHERE
-   wehre_condition
- LIMIT
+WHERE
+   where_condition
+LIMIT
    number_of_records
  
- SELECT DISTINCT         # include or exclude dcuplicate records
+SELECT DISTINCT         -- include or exclude dcuplicate records
  
- HIVE vs SQL:   
- * HIVE can specify columns using Java regex    SELECT '(ID|NAME)?+.+'   FROM some_table  (exclues ID and NAME)
- * FROM and SELECT clauses are interchangable ... multitable insert
- * HIVE requires explicit termination with ;
- * Subqueries:  Hive allows in FROM clauses, but not correlated subquery as part of select
+-- HIVE vs SQL:   
+-- HIVE can specify columns using Java regex    SELECT '(ID|NAME)?+.+'   FROM some_table  (exclues ID and NAME)
+-- FROM and SELECT clauses are interchangable ... multitable insert
+-- HIVE requires explicit termination with ;
+-- Subqueries:  Hive allows in FROM clauses, but not correlated subquery as part of select
  
  SELECT mycol 
  FROM (
@@ -85,10 +85,10 @@ FROM (
  
 
 
- # Warehouse will store data definition that is loaded into hive 
- /hive/warehouse   #actual path defined in HIVE configuration
+ -- Warehouse will store data definition that is loaded into hive 
+ -- /hive/warehouse   #actual path defined in HIVE configuration
 
- # similar to namespase
+ -- similar to namespase
  CREATE DATABASE
 /hive/warehouse/marketing.db/            directory with metadata
 /hive/warehouse/finance.db/
@@ -112,12 +112,12 @@ CREATE [EXTERNAL] TABLE [IF NOT EXISTS] [db_name.]table_name
   [TBLPROPERTIES (property_name=property_value, ...)]
  ;
  
-some additional details available 
-partitioning works different for internal vs external tables
-partitioning helps efficiency when using where clauses that can leverage the partitioned structure. (internal only?)
+--some additional details available 
+--partitioning works different for internal vs external tables
+--partitioning helps efficiency when using where clauses that can leverage the partitioned structure. (internal only?)
  
  
- # Internal Table ... location specifies place where hive will put data.   metadata doen first, then loaded
+-- Internal Table ... location specifies place where hive will put data.   metadata doen first, then loaded
  CREATE TABLE mytable  (key1 INT, date STRING, var1 INT)
  ROW FORMAT DELIMITED FIELDS TERMAINTED BY `,'
  STORED AS TEXTFILE
@@ -128,7 +128,7 @@ partitioning helps efficiency when using where clauses that can leverage the par
  
  
  
- #External Table
+-- External Table
  CREATE EXTERNAL TABLE myexttable (key1 INT, date STRING, var1 INT)
  ROW FORMAT DELIMITED FIELDS TERMAINTED BY `,'
  STORED AS TEXTFILE
@@ -136,9 +136,9 @@ partitioning helps efficiency when using where clauses that can leverage the par
 ;
 LOAD DATA INPATH 'hdfs:/path/folder/data.txt' INTO TABLE myexttable
 
-* LOAD DATA moves data from hdfs into warehouse, but 
-* LOAD DATA copies data from local source into warehouse
-* LOAD EXTERNAL
+-- LOAD DATA moves data from hdfs into warehouse, but 
+-- LOAD DATA copies data from local source into warehouse
+-- LOAD EXTERNAL
 
 
 /user/hive/warehouse 
@@ -165,3 +165,46 @@ AS SELECT COUNT(*) cnt , var            /* count variable excplicity named cnt *
 CREATE TABLE  new_table 
   LIKE  previous table                           /*empty shell of table */
 
+
+
+Name Spaces and Variable substituion   : hivevar hiveconf hiveenv
+set hive.variable.subsititue=true ; set hive.variable.subsititue=false ; 
+$ bin/hive --hivedef var=val -e 'set ; set var ; 
+$ bin/hive --hiveconf var=val -e 'set ; set var ; 
+set var=val ;
+use ${hivevar:var}
+-- use nested variables
+set c=${hivedef:${hivedef:b}} ;
+
+--  TABLE GENERATING FUNCTIONS & LATERAL FUNCTIONS 
+
+--- UDTF(expression)  ... creates a table of data from a row
+
+EXPLODE(array)  AS a  -- will create lines for each element in the array
+EXPLODE(map)    AS a  -- will create a table with two columns for each key-value pair
+-- no other expressions allowd in the select statement, nor cant be nested, nor be in gorup/cluster/sort
+
+SELECT a ,b , columnAlias
+FROM   basetable
+LATERAL VIEW UDTF(expression)  tableAlias   AS    columnAlias
+;
+
+-- can use results of previous lateral view in next lateral view
+SELECT a ,b , col1 , col2
+FROM   basetable
+LATERAL VIEW UDTF(x)    t1   AS    col1
+LATERAL VIEW UDTF(col1) t2   AS    col2
+;
+
+-- If you want to include rows from first table that have nulls in virtual table, need to use OUTER LATERAL VIEW
+SELECT a ,b , columnAlias
+FROM   basetable
+LATERAL VIEW OUTER UDTF(expression)  tableAlias   AS    columnAlias
+;
+
+
+
+
+
+
+--                  JOINS
