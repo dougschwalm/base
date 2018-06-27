@@ -2,6 +2,74 @@
 
 import pandas as pd
 import os
+import json
+
+# setting a path
+filename = os.path.join('..', 'directory', 'filename' )
+
+# read data from csv into dataframe
+df = pd.read_csv('file_name.csv') 
+df = pd.read_csv(filename)                     # alternative way using predefined filename
+
+df = pd.read_csv(filename , index_col='keyvar' )     # will use keyvar as the index instead of autogenerate
+
+# subset some rows (top) 
+df = pd.read_csv(filename , nrows=5) 
+
+# subset some columns (inclusive)
+keepcols = [ 'var1' , 'var2' , 'var3' ]
+df = pd.read_csv(filename , usecols=keepcols )          
+df = pd.read_csv(filename , usecols=[ 0 , 1, 4, 5 ] )    # column postions fine too ... can't mix          
+
+
+# ####################  Reading "from_records"   methods 
+#  Json folders to data frame
+# suppose data are in 7000 files xxxx.json  in object records
+
+pd.DataFrame.from_records(records,columns=["Coltitle1", "Coltitle2"]  #  will apply col titles to columns
+
+# create functions to read one file
+KEYS_TO_USE = [ 'var1' , 'var2' , var3' ]
+
+def get_record_from_file(file_ath , keys_to_use):
+   """ Process single json file and return a tuple containing specific fields."""
+   
+   with open(file_path) as filename:
+      content = json.load(filename)
+      
+      record = []
+      for field in keys_to_use:
+         record.append(content[field])
+         
+      return tuple(record)
+      
+# iterate over files
+def read_artworks_from_json(keys_to_use):
+   """ Traverse the directories with JSON files.
+   For first file in eachdirectory call fucntion for processing single file and go to the next directry.
+   """
+   
+   JSON_ROOT = os.path.join('..', 'directory' , 'filename' )
+   
+   artworks = []
+   for root, _, files in os.walk(JSON_ROOT):
+      for f in files:
+         if f.endswith('json'):
+            record = get_record_from_file(
+                         os.path.join(root, f),
+                         keys_to_use)
+            filename.append(record)
+         break                                    # visit only 1st file in the directory
+ df = pd.Dataframe.from_records(filename,
+                                columns=keys_to_use
+                                index="id")
+ return df
+   
+
+
+
+# save data for later
+df.to_pickle(os.path.join('..', 'data_frame..pickle'))
 
 # read data into a data frame
 df = pd.read_pickle(os.path.join('..', 'data_frame.pickle'))
