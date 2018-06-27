@@ -1,0 +1,68 @@
+# from pluralsight , pavel kordex, pandas-fundamentals
+
+import pandas as pd
+import os
+
+# read data into a data frame
+df = pd.read_pickle(os.path.join('..', 'data_frame.pickle'))
+
+
+# create a list of items from one column (for maniuplation .. not for data tranfrom)
+listname = df['colname']             # will put elements of colname into list name
+
+pd.unique(listname)                  # will cull only unique values of listname
+len(pd.unique(listname))             # counts unique instances of values in listname
+
+
+# Filtering
+df['colname'] == "value"              # creates a boolian column, allows for filtering of rows by colvals
+s = df['colname'] == "value"          # creates the data filtered by value
+s.value_counts()                      # gives number of rows in the filtered set
+
+# Frequency data
+freq_counts = df['colname'].value_counts()        # counts number of row instances per colname value
+freq_counts['col_value']                          # returns number of rows that had col == "Value"
+
+
+# checking the type of an element
+type(df['height'])    # will show that it is an object, like most of panda data type
+
+# sorting a data column to check for dirty data
+df['colname'].sort_values().head()
+df['colname'].sort_values().tail()
+
+#converting types
+pd.to_numeric(df['colname'])
+pd.to_numeric(df['colname'], errors='coerce')  #force NaNs
+# to update the data in the data frame in one step:
+df.loc[:, 'colname'] = pd.to_numeric(df['colname'], errors='coerce') 
+
+
+# creating new column in data frame (as product of to other variables)
+newcol = df['var1'] * df['var2']
+df = df.assign(newcol=newcol
+
+
+# taking a slice of a data frame:  loc iloc
+
+df['colname']                       # shortcut for just one column
+df.colname                          # avoid this, can have unexpected results
+df[ list ]                          # this is fine .. eg:  df['colname1' , 'colname2' ]
+
+
+df.loc[1035,'artist']               # row index=1035, column name = 'artist
+
+df.iloc[0,0 ]                       #  first element in first row of first column
+df.iloc[0,:]                        # first row
+df.iloc[:,0:2]                      # first columns 
+
+df.loc[df['colname'] == 'textstring1' , 'textsring2' ]   # also ok
+
+
+df['colname'].max()     # returns max value
+df['colname'].idxmax()  # returns rowlabel
+df.loc[df['colname'].idxmax(), : ] # returns row with max value of colname 
+
+
+
+
