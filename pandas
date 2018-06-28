@@ -3,6 +3,8 @@
 import pandas as pd
 import os
 import json
+import matplotlib.pyplot as plt
+from matplotlib import rcParms
 
 # setting a path
 filename = os.path.join('..', 'directory', 'filename' )
@@ -130,6 +132,152 @@ df.loc[df['colname'] == 'textstring1' , 'textsring2' ]   # also ok
 df['colname'].max()     # returns max value
 df['colname'].idxmax()  # returns rowlabel
 df.loc[df['colname'].idxmax(), : ] # returns row with max value of colname 
+
+# Copying a part of a data frame
+small_df = df.iloc[49980:50019, :].copy()
+
+
+# iterating over a group
+df.groupby('colname'):             # data frame group by ... iterable .. creates smaller data frames by unique values
+grouped = df.groupby('colname')
+
+for name, group_df in grouped:
+   print(name)
+   print(group_df)
+   break                            # this will check the process, giving only the first roup
+   
+# Operations on Groups / Aggregate operations
+
+for name, group_df in small_df.groupby('colname'):
+   min_val = group_df['colname2'].min()
+   print("{}: {}".format(name, min_val))
+
+# Transformations on Groups
+
+# example, replace NaN with the modal value of the variable
+def fill_values(series):
+   values_counted = series.value_counts()
+   if values_counted.empty:
+      return series
+   most_frequent = values_counted.index[0]
+   new_medium = series.fillna(most_frequent)
+   return new_medium
+   
+def transform_df(source_df):
+   groups_dfs = []
+   for name, group_df in source_df.groupby('colname'):
+      filled_df = group_df.copy()
+      filled_df.loc[:, 'missvalcolname2'] = fill_values(group_df['missvalcolname2'])
+      group_dfs.append(filled_df)
+      
+   new_df = pd.concat(group_dfs)
+   return new_df
+      
+ filled_df = transform_df(small_df)
+      
+# Note, looping is available, but better methods are available, for example, as follows:
+grouped_colname = df.groupby('groupingcol')['colname']
+df.loc[:, 'colname' ] = grouped_medium.transfrom(fill_values)       # note, this fill_values function was defined above
+
+# another example, to find minimum acuqsitionYaer by artist:
+grouped_acq_year = df.groupby('artist')['acquisitionyear']
+min_acqusition_years = grouped_acq_year.agg(np.min)
+min_acqusition_years = grouped_acq_year.min()       # special case available for min
+
+
+
+# Filtering on groups
+
+# look at duplicates
+grouped_colvar  = df.groupby('colvar')
+condition = lambda x: len(x.index) > 1 
+filtered_df = grouped_titles.filter(condition)
+
+
+
+#Examples:
+grouped_mediums = small_df.groupby('artist')['medium']
+smalldf.loc[:, 'medium'] = grouped_mediums.transfrom(fill_values)
+
+# Min
+df.groupby('artist').agg(np.min)   # numpy min function ... often best to used numpy  but here
+df.groupby('artist').min()         # pandas' min shortcut may be just as good or better
+
+# Filter
+grouped_titles = df.groupby('title')
+title_counts = grouped_titles.size().sort_values(acending=False)
+condition = lambda x: len(x.index) > 1             # appears at least two times in the data set
+dup_titles_df = grouped_titles.filter(condition)
+dup_titles_df.short_values('title', inplace=True)
+
+
+
+
+########## Output
+
+small_df.to_excel("basic.xlsx")
+small_df.to_excel("noindex.xlsx", index=False)
+small_df.to_excel("columns.xlsx" , columns=["colname1", "colname2" , "colname3"] )
+#multiple worksheets
+writer = pd.ExcelWriter('multipe_sheets.xlsx' , engine='xlsxwriter')
+small_df.to_excel(writer, sheet_name="Preview", index=False)
+df.to_excel(writer, sheet_name="Complete", index=False)
+writer.save()
+
+#conditional formatting
+artist_counts=df['artist'].value_counts()
+artist_counts.head()
+writer = pd.ExcelWriter('colors.xlsx', engine='xlsxwrtier')
+artist_counts.to_excel(writer, sheet_name="artist Counts")
+sheet = sriter.sheets['Artist Counts']
+cell_range = 'B2:B{}'.format(len(artist_counts.index))
+sheet.condition_format(cells_range, {'type': '2_color_scale',
+                                             'min_value': '10',
+                                             'min_type': 'percentile',
+                                             'max_value': '99',
+                                             'max_type' : 'percentile'})
+writer.save()
+
+
+#SQL
+import sqlite3
+
+with sqlite3.connect('my_database.db') as conn:
+   small_df.to_sql('Tate', conn)
+   
+# import sqlalchemy as sa
+# with sa.create_engine('postgresql://localhost/my_data') as conn:
+#   small_df.to_sql('Tate', conn)
+
+# JSON
+small_df.to_json('default.json')
+small_df.to_json('table.json', orient='table'))          # puts schema first ,then data in squential tables after
+
+
+
+#Plotting      (uses matplotlib)
+s.plot()
+df.plot()
+
+#eg:
+aquisition_years = df.groupby('aquisitionYear').size()         # creates 2 variables
+aquisition_years.plot()                                        # basic plot, not formatting
+
+#matplotlib  (figure based)
+# subplots are colled axes
+
+import matplotlib.pyplot as plt
+from matplotlib import rcParms
+
+rcParms.update({'figure.autolayout': True,
+                'axes.titlepad': 20})
+                
+fig= plt.figure()
+subplot = fig.add_subplot(1,1,1)
+aquisition_years.plot(ex=subplot)
+fig.show()
+                
+
 
 
 
