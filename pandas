@@ -274,11 +274,43 @@ rcParms.update({'figure.autolayout': True,
                 
 fig= plt.figure()
 subplot = fig.add_subplot(1,1,1)
-aquisition_years.plot(ex=subplot)
+aquisition_years.plot(ax=subplot)
 fig.show()
                 
+# Possible additions:
+subplot.set_xlabel("Acquistion Year")
+subplot.set_ylabel("aqrtworks Acquired")
+subplot.locator_parms(nbins=40, axis='x')
+acquisition_years.plot(ax=subplot, rot=45)         # will rotate ticks
+acquisition_years.plot(ax=subplot, rot=45, logy=True)         # will create log-scale for y-axis
+acquisition_years.plot(ax=subplot, rot=45, logy=True, grid=True)         # puts grid on graph
+
+# set fonts
+title_font = {'family': 'source sans pro',
+              'color' : 'dark blue' ,
+              'weight': 'normal' ,
+              'size' : 20,
+              }
+lables_font = {'family': 'consolas',
+              'color' : 'dark red' ,
+              'weight': 'normal' ,
+              'size' : 16,
+              }          
 
 
+
+
+#  Total together:
+fig= plt.figure()
+subplot = fig.add_subplot(1,1,1)
+acquisition_years.plot(ax=subplot, rot=45, logy=True, grid=True)
+subplot.set_xlabel("Acquistion Year" , fontdict=labels_font, labelpad=10)       # notice font addition
+subplot.set_ylabel("aqrtworks Acquired" , fontdict=labels_font)                 # notice font addition
+subplot.locator_parms(nbins=40, axis='x')
+subplot.set_title("Tate Gallery Acquisitions", fontdict=title_font)              # sets the title, plus font
+fig.show()
+fig.savefig('plot.png')
+fig.savefig('plot.svg', format='svg')
 
 
 
