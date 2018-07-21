@@ -1,0 +1,53 @@
+
+
+########## Creating Repositories ##########
+#Clone an existing repository
+git clone html://site   
+
+# Create a new local repository
+git init
+
+git clone file:///usr/home/nand/repl  mypath
+
+
+########## Local Changes ##########
+# Exploration and confirmation commands
+git status           # Changed fiels in your working directory
+git diff             # lists changes to tracked files
+
+git show
+
+# Staging Area stage
+git add .            # add all current changes to the staging area
+git add -p <files>   # add some changes in <files> to the staging area
+
+# Commit Stage 
+git commit -a        # commit all local changes in tracked files
+git commit           # commit previously staged changes
+git commit -m "note" # commit previously statged changes with the message on command line
+git commit --amend   # Change the last commit (dont amend published commits!)
+
+##########  Commit History #########
+
+git log              # show all commits, starting with newest
+git log -p <files>   # show changes over time for specific file
+git log hashstart    # show changes related to a specific commit per the first 6-8 characters of the commite hash
+git log HEAD..HEAD~2 # show changes related to last through 3rd last commits  (HEAD~1..HEAD~2 , etc)
+git blame <file>     # who changed what and when in <file>
+
+########## Branches and Tags ##########
+
+git branch -av         # list all existing branches
+git checkout <branch>  # switch HEAD branch
+git branch <newbranch> # create new branch based on current HEAD
+git checkout --track <remote/branch>   #create new tracking branch based on a remote branch
+git branch -d <branch> # delete a local branch
+git tag <tagname>      # mark the current commit with a tag
+
+########## Update and Publish ##########
+
+git remote -v             # list all currently configured remotes
+git remote show <remote>  # show information about a remote
+
+
+
