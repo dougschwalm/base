@@ -1,5 +1,48 @@
 
 
+new_> nano filename
+undo> git checkout -- filename          # will undo any changes that were made, but not staged (and delete changes for ever)
+
+new_>git add filename|glob             # will put it into staging area after editing it
+undo>git reset HEAD filename           # will undo changes that have been staged (but not before changes were made..need checkout)
+
+git commit -m "Adding a new thing"
+
+git log filename                        # find the hash# you want to restore to
+git checkout hash# filename             # restore an old version of a file
+
+git status
+git diff  (  @@ start_line, number_of_lines_chagned    ;  +added -deleted
+git diff -r HEAD path/to/file     # will compare most recent commit with a file
+
+# can reset entire folder or lots of files:
+git rest HEAD folder        eg :  git reset HEAD .
+git checkout -- folder      eg:   git checkout -- .
+
+
+git log
+git log path/file
+git show HASH#                    # put first 4-8 letters of hash to see details for one entry
+git show HEAD~1                   # HEAD is a relative reference for most recent commit hash#
+git annotae path/file             # shows details on who made changes when
+git show HEAD..HEAD~1             # shows changes beween commites ... any ID1..ID2  will work
+
+.gitignore                        # file can includ *.log or other things to not backup
+
+git clean -n                      # Shows which files are note being tracked
+git clean -f                      # Deletes files not being tracked
+
+git config --list 
+git config --list --local          #
+git config --list --global         #  user.name  and user.email 
+git config --list --system         #
+
+git config --global user.name tfwv
+git config --global user.email douglas.schwalm.tfwv@statefarm.com
+
+
+
+
 ########## Creating Repositories ##########
 #Clone an existing repository
 git clone html://site   
@@ -46,8 +89,35 @@ git tag <tagname>      # mark the current commit with a tag
 
 ########## Update and Publish ##########
 
-git remote -v             # list all currently configured remotes
-git remote show <remote>  # show information about a remote
+git remote -v              # list all currently configured remotes
+git remote show <remote>   # show information about a remote
+git remote add <shortname> <url>  # add new remote repository, named <remote>
+git fetch <remote>         # download all changes from <remote> but don't integrate into HEAD
+git pull <remote> <branch> # download chagnes and directly integrate into HEAD
+git push <remote> <branch> # publish local changes on a remote
+git branch -dr <remote/branch> # delete a branch on the remote
+git push --tags            # Publish your tags
+
+########## Merge and Rebase ##########
+
+git merge <branch>      # merge <branch> into your current HEAD
+git rebase <branch>     # rebase your current HEAD onto <branch>  (don't do this!!)
+git rebase --abort      # abort a rebase
+git rebase --continue   # Continue a rebase after resolving conflicts
+git mergetool           # Use your configured merge tool to solve conflicts
+git add <resolved-file> # Use yoru editor to manually solve conflicts and, after, mark file as resolved
+git rm <resolved-file>  #
+
+########## Undo ##########
+
+git reset --hard HEAD    # Discard all local changes in yoru working directory
+git checkout HEAD <file> # Discard local changes in a specific file
+git revert <comit>       # Revert a commit (by producing a new commit with contrary changes)
+git reset --hard <comit> # Reset your HEAD pointer to a previous commit and discard all changes since then
+git reset <commit>       # Reset your HEAD pointer to a previous commit and preserve all chagnes as unstaged changes
+git reset --keep <commit># Reset your HEAD pointer to a previous commit and preserve uncommitted local changes
+
+
 
 
 
