@@ -1,5 +1,5 @@
 
-
+########## Typical commands for workign on master branch
 new_> nano filename
 undo> git checkout -- filename          # will undo any changes that were made, but not staged (and delete changes for ever)
 
@@ -8,16 +8,17 @@ undo>git reset HEAD filename           # will undo changes that have been staged
 
 git commit -m "Adding a new thing"
 
+# can reset entire folder or lots of files:
+git rest HEAD folder        eg :  git reset HEAD .
+git checkout -- folder      eg:   git checkout -- .
+
+# Checking on work:
 git log filename                        # find the hash# you want to restore to
 git checkout hash# filename             # restore an old version of a file
 
 git status
 git diff  (  @@ start_line, number_of_lines_chagned    ;  +added -deleted
 git diff -r HEAD path/to/file     # will compare most recent commit with a file
-
-# can reset entire folder or lots of files:
-git rest HEAD folder        eg :  git reset HEAD .
-git checkout -- folder      eg:   git checkout -- .
 
 
 git log
@@ -26,6 +27,8 @@ git show HASH#                    # put first 4-8 letters of hash to see details
 git show HEAD~1                   # HEAD is a relative reference for most recent commit hash#
 git annotae path/file             # shows details on who made changes when
 git show HEAD..HEAD~1             # shows changes beween commites ... any ID1..ID2  will work
+
+#setting up project
 
 .gitignore                        # file can includ *.log or other things to not backup
 
@@ -40,7 +43,32 @@ git config --list --system         #
 git config --global user.name tfwv
 git config --global user.email douglas.schwalm.tfwv@statefarm.com
 
+# Branching
+git branch                      # shows all the branches in the project
+git diff branch1..branch2       # shows differences between branches
+git checkout branchname         # switches to the stated branch
+git checkout -b newbranch       # creates a new branch , and copies fiels from original
 
+git merge source destination    # merges two branches  
+   git add resovled file        # if there were conflicts, fix in nano, then add to staging area
+   git commit -m "resoved stuff" # finalize the resolution
+
+
+git rm filename                 # removes file from stating area?
+
+git init project-name           # creates a directory for yoru repository
+git init                        # makes current directory a resository
+git clone file:///existing/project   # will clone 
+
+git remote                     # 
+git remote -v                  # verbose
+git remote add remotename  htmlpath  # assocates remotename with the remote repository
+
+git pull remote branch         # pulls changes from remote to desired branch
+     git checkout -- .  # remove all local changes if there are conflicts
+
+git push remote branch        # puts all stuff in branch into remote
+  (note, may need to    git pull remote branch  to merge any changes first, then git push )
 
 
 ########## Creating Repositories ##########
