@@ -146,6 +146,19 @@ git reset <commit>       # Reset your HEAD pointer to a previous commit and pres
 git reset --keep <commit># Reset your HEAD pointer to a previous commit and preserve uncommitted local changes
 
 
+########## SSH Keys ##########
+In general, you may need an ssh key on each server you work on.
+These are found in the ~/.ssh/  directory
+The "public key" will be in id_rsa.pub ... typically it starts with ssh-rsa, and ends with a nickname, like TFWVdm73
+*Simply copy the contents of the file (the key), and paste it into the 'Add Key" section in GitLab->UserSettings->SSH Keys
+*then, on the server, add the sfgitlab.per.statefarm ssh-rsa key to the known_hosts file
+
+++if it is not there, generate one:
+   >ssh-keygen -t rsa -C "TFWVnc74" -b 4096
+++ The gitlab key is in the file of other servers
+
+
+
 
 
 
