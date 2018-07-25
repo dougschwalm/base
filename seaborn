@@ -61,6 +61,200 @@ sns.lmplot(x="quality",
            row="type")           
 
 
+# to set default themes, use sns.set()
+sns.set()
+df['Tuition'].plot.hist()
+
+for style in ['white', 'dark', 'whitegrid', 'darkgrid', 'ticks']:
+    sns.set_style(style)
+    sns.distplot(df['Tuition'])
+    plt.show()
+    
+sns.set_style('white')
+sns.distplot(df['Tuition'])
+sns.despine(left=True)
+
+df['fmr_2'].plot.hist()
+plt.show()
+plt.clf()
+
+# Set the default seaborn style
+sns.set()
+
+# Plot the pandas histogram again
+df['fmr_2'].plot.hist()
+plt.show()
+plt.clf()
+
+# Plot with a dark style 
+sns.set_style('dark')
+sns.distplot(df['fmr_2'])
+plt.show()
+
+# Clear the figure
+plt.clf()
+# Set the style to white
+sns.set_style('white')
+
+# Create a regression plot
+sns.lmplot(data=df,
+           x='pop2010',
+           y='fmr_2')
+
+# Remove the spines
+sns.despine()
+
+# Show the plot and clear the figure
+plt.show()
+plt.clf()
+
+# can use matplotlib color codes:
+sns.set(color_codes=True)
+sns.distplot(df['Tuition'], color='g')
+
+# 6 default pallets:   deep , muted , pastel , bright , dark , colorblind
+for p in sns.palettes.SEABORN_PALETTES:
+    sns.set_palette(p)
+    sns.distplot(df['Tuition'])
+    
+# palplot dislays color palettes in Jupyter notebook
+for p in sns.palettes.SEABORN_PALETTES:
+    sns.set_palette(p)
+    sns.palplot(sns.color_palette())
+    plt.show()
+# sns.color_pallette() returns the current palette
+# categorical circular colors ... non-ordered 
+# sequential ... high to low values
+# diverging ... extreme values are interesting 
+
+sns.set(color_codes=True)
+sns.distplot(df['fmr_3'], color='m')
+
+# Show the plot
+plt.show()
+
+# Create the coolwarm palette for 8 Purples colores
+sns.palplot(sns.color_palette("Purples", 8))
+plt.show()
+
+sns.palplot(sns.color_palette("husl", 10))
+plt.show()
+sns.palplot(sns.color_palette("coolwarm", 6))
+plt.show()
+
+
+# use matplotlib Axes objects to tailor seaborn
+# customizes x-axis:
+fig, ax = plt.subplots()
+sns.distplot(df['Tuition'], ax=ax)
+ax.set(xlabel="Tuition 2013-14")
+
+DataCampData Visualization with SeabornCustomizing with matplotlibdata visualization with seaborn
+Chris Moffitt
+Instructor
+matplotlib Axes
+Most customization available through matplotlib Axes objects
+Axes can be passed to seaborn functions
+ fig, ax = plt.subplots()
+sns.distplot(df['Tuition'], ax=ax)
+ax.set(xlabel="Tuition 2013-14")
+ Example axes plot
+
+# sets both axes with limits and adds title
+ fig, ax = plt.subplots()
+sns.distplot(df['Tuition'], ax=ax)
+ax.set(xlabel="Tuition 2013-14",
+       ylabel="Distribution", xlim=(0, 50000), 
+title="2013-14 Tuition and Fees Distribution")
+
+
+# combining plots
+fig, (ax0, ax1) = plt.subplots(nrows=1,ncols=2,
+                               sharey=True, figsize=(7,4))
+sns.distplot(df['Tuition'], ax=ax0)
+sns.distplot(df.query('State == "MN"')['Tuition'], ax=ax1)
+ax1.set(xlabel="Tuition (MN)", xlim=(0, 70000))
+ax1.axvline(x=20000, label='My Budget', linestyle='--')
+ax1.legend()
+
+# Create a figure and axes
+fig, ax = plt.subplots()
+
+# Plot the distribution of data
+sns.distplot(df['fmr_3'], ax=ax)
+
+# Create a more descriptive x axis label
+ax.set(xlabel="3 Bedroom Fair Market Rent")
+
+# Show the plot
+plt.show()
+# Create a figure and axes
+fig, ax = plt.subplots()
+
+# Plot the distribution of 1 bedroom rents
+sns.distplot(df['fmr_1'], ax=ax)
+
+# Modify the properties of the plot
+ax.set(xlabel="1 Bedroom Fair Market Rent",
+       xlim=(100,1500),
+       title="US Rent")
+
+# Display the plot
+plt.show()
+
+# Create a figure and axes. Then plot the data
+fig, ax = plt.subplots()
+sns.distplot(df['fmr_1'], ax=ax)
+
+# Customize the labels and limits
+ax.set(xlabel="1 Bedroom Fair Market Rent", xlim=(100,1500), title="US Rent")
+
+# Add vertical lines for the median and mean
+ax.axvline(x=median, color='m', label='Median', linestyle='--', linewidth=2)
+ax.axvline(x=mean, color='b', label='Mean', linestyle='-', linewidth=2)
+
+# Show the legend and plot the data
+ax.legend()
+plt.show()
+
+
+
+# Create a plot with 1 row and 2 columns that share the y axis label
+fig, (ax0, ax1) = plt.subplots(nrows=1, ncols=2, sharey=True)
+
+# Plot the distribution of 1 bedroom apartments on ax0
+sns.distplot(df['fmr_1'], ax=ax0)
+ax0.set(xlabel="1 Bedroom Fair Market Rent", xlim=(100,1500))
+
+# Plot the distribution of 2 bedroom apartments on ax1
+sns.distplot(df['fmr_2'], ax=ax1)
+ax1.set(xlabel="2 Bedroom Fair Market Rent", xlim=(100,1500))
+
+# Display the plot
+plt.show()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
