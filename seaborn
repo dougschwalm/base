@@ -1,0 +1,73 @@
+#distplot
+#     rugplot
+#     kdeplot
+# lmplot
+#   regplot
+
+# import all modules
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Read in the DataFrame
+df = pd.read_csv(grant_file)
+
+# Display pandas histogram
+df['Award_Amount'].plot.hist()
+plt.show()
+
+# Clear out the pandas histogram
+plt.clf()
+
+# Display a Seaborn distplot
+sns.distplot(df['Award_Amount'])
+plt.show()
+
+
+
+
+# Clear the distplot
+plt.clf()
+
+sns.distplot(df['alcohol'], 
+             kde=False,
+             bins=10)
+sns.distplot(df_wines['alcohol'],
+             hist=False, 
+             rug=True)             
+sns.distplot(df_wines['alcohol'],
+             hist=False,
+             rug=True,
+             kde_kws={'shade':True})
+plt.show()
+
+sns.regplot(x="alcohol",
+            y="pH",
+            data=df)
+sns.lmplot(x="alcohol",
+           y="quality",
+           data=df)
+sns.lmplot(x="quality",
+           y="alcohol",
+           data=df,
+           hue="type")
+sns.lmplot(x="quality",
+           y="alcohol",
+           data=df,
+           col="type")
+sns.lmplot(x="quality",
+           y="alcohol",
+           data=df,
+           row="type")           
+
+
+
+
+
+
+
+
+
+
+
+
