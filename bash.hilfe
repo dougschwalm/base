@@ -1,0 +1,40 @@
+
+
+# set a variable
+varname = value
+
+# call a variable
+echo $varname
+
+#For Loops
+for index in list ; do body with $index ; N+1 command ; done
+
+# repeating command for each file
+for fname in dir/*.txt ; do echo $fname ; done
+
+or 
+dirs = dir/*.txt
+
+for fname in $dirs ; do echo $fname ; done 
+
+
+# script variables
+
+$@   ... all command line parameters
+     eg:  sort $@ | uniq       > bash unique-lines.sh filenames
+     
+     
+### useful scripts:
+getcol.sh :   cut -d , -f $2 $1
+getcol.sh  filename col#
+
+
+# Script comment
+for index in $@
+do
+  command1
+  command2
+done
+
+
+
