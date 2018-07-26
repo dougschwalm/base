@@ -1,0 +1,89 @@
+Machine Learning can include a number of techniques:
+
+
+https://www.datasciencecentral.com/profiles/blogs/machine-learning-can-we-please-just-agree-what-this-means
+
+
+I) Linear / Logistic Regression
+
+
+
+II) Cluster KNN 
+Manual:  FASTCLUS , KRIGE2D MODECLUS
+Direct: PROC DISCRIM  (averaging, with weights by volume)  search algorithm = k-d Tree
+
+kNN regression:  tweaks to KRIEG2D can get it done, but sipmlistically
+
+%MACRO kNN(mdata=,tdata=,odata=,depvar=,&fvars=,nk=5)
+* the depvar will be classified according to the feature variables fvars ;
+* the training data is defined by mdata, testing data by tdata, and results go to odata ;
+* time needed to build the kd-Tree will be proportional to ln(mobs) * (mobs * #fvars) , but keep N >> 2k;
+* time needed to search through the tree is proportional to ln(tobs) ;
+* memory needed is approximately proportional to #vars^2 , or v^2 ;
+*   c(32v + 3*l +128) + 8v^2 + 104v + 4*l bytes , c=#class levels of depvar, l=length of depvar ;
+* Try and limit fvars to 2-4 variables , or use PCA / SVD to reduce dimension first ;
+* M-fold (5 or 10) Cross-Validation should be used to evaluate choice of nk and #fvars , using error rate and AUC;
+PROC DISCRIM data=&mdata method=npar k=&nk testdata=&tdata testout=&odata ;
+class &depvar ;
+vars &fvars ;
+run ;
+%MEND ;
+
+https://analytics.ncsu.edu/sesug/2012/SD-09.pdf
+%macro knnreg(train_dsn, score_dsn,
+feature1 , feature2 ,
+loopid);
+proc krige2d data=&train_dsn
+outest=pred&loopid
+outn=nn&loopid;
+coord xc=&feature1 yc=&feature2;
+pred var=Y NP=10;
+model scale=2 range=1E-8 form=exp;
+grid gdata=&score_dsn xc=&feature1 yc=&feature2;
+run;
+%mend;
+%let nloops=50;
+proc surveyselect data=features out=feature2
+reps=&nloops sampsize=2 method=srs;
+run;
+data _null_;
+set feature2; by replicate;
+retain train_dsn ’train’ score_dsn ’toscore’;
+retain _id 0;
+array _f{2} $ _temporary_;
+if first.replicate then do;
+call missing(of _f[*]);
+_id=1;
+end;
+_f[_id]=varname;
+_id+1;
+if last.replicate then do;
+call execute(’%knnreg(’
+|| compress(train_dsn) || ’,’
+|| compress(score_dsn) || ’,’
+|| compress(_f[1]) || ’,’
+|| compress(_f[2]) || ’)’
+);
+end;
+run;
+
+III) Decision Trees
+
+
+IV)  SVMs
+
+
+V) Random Forests
+
+VI) Gradient Boosting 
+
+VII) Ensembles
+
+VIII) Artificial Neural Nets
+
+DLI) Recurrent Neural Nets RNNs
+
+DLII) Convolutional Neural Nets CNNs
+
+
+
