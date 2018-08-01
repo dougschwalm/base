@@ -314,3 +314,22 @@ fig.savefig('plot.svg', format='svg')
 
 
 
+
+
+
+
+df.info()
+df.head()
+df['varame']  same as df.varame
+df[['var1','var2']]  will select 2  vars
+df.loc[5:10,]   will select rows with id labels 5 to 10, with all columns
+df.loc[5:10, 'Var1':'VarEnd']  selects 2 ranges
+df.loc[5:10, ['var1','var5','var7']]  
+
+df.iloc[5:10, 3:8]  selects 6th-10th row, and 4th-8th variable
+fileterd_rows = df.loc[df.sex=='male',:]    
+filtered_rows = df.loc[((df.sex=='male') & (df.pclass==1)),:]   male, 1st class passengers
+
+dfnew = pd.concat( (df1,df2), axis=0) # axis=0 means stack rows ontop rows
+
+
