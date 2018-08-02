@@ -1,0 +1,106 @@
+conda help  | -h
+conda activate           # used to switch to an environment
+conda clean
+conda config
+conda create
+conda deactivate
+conda env
+conda info
+conda install -
+conda list
+conda package
+codna remove
+conda uninstall           # alias for remove
+conda search              # looks for what versions are available
+conda update
+conda upgrade             # alias for update
+conda --version  | -V
+
+
+## conda help
+conda install --help 
+
+## conda search <pkg>     
+
+## conda list <pkg>       # shows version and build channel of packages in current enviornment
+conda list --name envname <pkg|s>   # shows version and build of paackages in specified environment
+
+Versioning convention:  Major.Minor.Patch == Version.Update.Patch==V.U.P
+Major/Version can include changes to API, perhaps non-compatable
+Minor/Update can include new improvements or changes to API, but backward compatible
+Patches are security updates, rarely changing API
+
+## conda info <pkg>      # shows information and dependencies  ...  will show lots of builds .. 
+                         # can narrow with pkg=V.U.P=build   (with build allowing * wildcard)
+
+## conda install <pkg>
+conda install pkg<=V.U.P>   # can specificy the Major or Major.Minor version desired
+conda install 'pkg=1.0|1.4*'  # subsets of versions can be identified to install
+
+conda install -c my-organization pkg      # installs from a specified channel or repp
+
+## conda update <pkg>
+
+## conda remove pkg
+note, sometimes removing a package allows others to be updated, since the dependencies in versions may have been holding an update back.
+For example, cookiecutter may hold back matlibplot , numpy, and others due to verison control
+
+########## Channels / Repositories
+https://preo.continuum.io/pkgs/main                # main public repository
+
+
+## anaconda search
+conda search --channel channelname  --override-channels --platform linux-64   
+             # --chanel or -c  will do a channel search
+             # --override-channels will preclude the default channels
+             3 --platform X  will look on platforms specified, rather than restricting for current user platform
+conda search -c davidmertz --override-channels --platoform linux-64
+conda search -c conda-forge -c sseefeld -c gbrender --platform win-64 textadapter   
+
+anaconda search pkg      # searches over all channels and all platforms  ... run by package anaconda-client
+
+
+https://github.com/conda-forge
+
+Python Package Inex (PyPI)
+
+
+########## Environments
+
+## conda env list                   # shows list of all current environments
+conda list --name envname <pkg|s>   # shows version and build of paackages in specified environment
+
+switching between environments can also be done with Anaconda Navigator or Jupyter nb_conda
+(versions before 4.4 had different syntax ... Windows:  activate Envname \\ deactivate .  
+                                            Linux: source activate envname \\ source deactivate
+conda activate ENVNAME                                                        # switch to an environment
+conda deactivate                                                              # brings back to base
+conda env remove --name envname        or conda env remove -n envname         # deletes an environment
+conda create --n newenv python=3.6 pandas=0.22 scipy statsmodels              # create environment with pkg list
+
+conda env export                                                              # exports the current enviornment
+conda env export -n envname                                                   # exports the specified environment
+conda env export -n envname -f exportfile.yml                                 # exports to a file rather than terminal
+conda env create --file filename.yml                                          # creates an enviornment from specified file
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
