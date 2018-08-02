@@ -1,0 +1,8 @@
+pip install --user cookiecutter
+pip install --user seaborn
+
+conda install cookiecutter
+
+
+To install template:
+dm73sr02.tfwv: cookiecutter https://github.com/drivendata/cookiecutter-data-science
