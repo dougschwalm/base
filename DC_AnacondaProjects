@@ -1,0 +1,233 @@
+Anaconda projects specify urls for downloadable data, environments, and code conatianed in anaconda-project.yml
+
+##### The anaconda-project packages needs to exist
+conda install anaconda-project 
+
+anaconda-project list-packages                # shows packages needed to run the project
+anaconda-project prepare                      # creates envs/default
+anaconda-project list-commands                # will list commands available
+anaconda-project run <cmd> <args>             # will run one of the commands available
+
+
+### items defined or listed in the anaconda-project.yml
+name
+icon
+description
+channels
+
+anaconda-project add-command                  # adds commands available in the project to yml file
+anaconda-project add-variable                 # adds environment variables to project to yml file
+anaconda-rpoject add-service                  # adds entry for services that need to be available
+anaconda-project add-download                 # adds a URL that points to files needed for downloading
+anaconda-project add-packages                 # adds packages to the list packages that must be installed
+anaconda-project add-platforms                # adds an entry to explan what platform it will run on
+anaconda-project add-env-spec                 # adds an environment specification
+
+
+##### Example
+mkdir mortgagte_rates
+cd mortgage_rates
+anaconda-project-init
+nano anaconda-project.yml        (enter the description)
+anaconda-project add-packages python=3 pandas statsmodels
+anaconda-project add-download MORTGAGE_RATES https://goo.gl/jpbAsR 
+anaconda-project add-command --type unix  forecast "python forecast.py"
+anaconda-project run 
+
+forecast.py
+--------------
+import pandas as pd
+import statsmodels.api as sm
+
+### Retrieve MORTGAGE_RATES from the enviornment
+MORTGAGE_RATES = os.environ["MORTGAGE_RATES"]
+
+df = pd.read_csv(MORTGAGE_RATES, index_col='DATE', parse_dates=True)
+trimmed = df.log['2010':].resample('MS').first()
+
+model = sm.tsa.SARIMAX(trimmed['MORTGAGE30US'], order=(12,0,0)).fit(disp=False)
+
+YEAR = os.environ["YEAR"]
+forecast = model.get_prediction('{}-1-1'.format(YEAR), '{}-12-1'.format(YEAR), confint=0.95).summary_frame()
+
+print('Forecasted {} 30-year mortgage rates at the 95% confidence interval'.format(YEAR))
+for date, row in forecast.iterrows():
+    month=date.strftime('%B')
+    rate = row['mean']
+    margin = row['mean_se']*1.96
+    result = '{:10s} {:.2f}% (+/- {:.3f})'.format(month, rate, margin)
+    print(result)
+--------------
+
+
+anaconda-project prepare             # will download nad install latest version of each package
+anaconda-project update              # updates all packages
+anaconda-project lock                # writes current versions of every packages, including low-level dependencies
+
+A package will typically have 
+.projectignore
+anaconda-project.yml
+anaconda-project-lock.yml
+files.py
+files2.py
+
+not needed are 
+/envs
+downloaded files
+
+eg:
+anaconda-project archive /home/repl/mortgae_rates.zip
+anaconda login
+anaconda upload zipfile --package-type=project 
+
+############################ Modules ##############################
+first place import looks for files is the current directory
+
+## to condition modules to behave differently than runtime scripts, use
+if __name__ == '__main__':
+    pi = compute_pi(int(8e6))
+    print('pi is approximately {:.7f}'.format(pi))
+
+#### Packages
+my_package/
+    LICENSE
+    README
+    setup.py
+    my_package/
+        __init__.py
+        module1.py
+        module2.py
+
+
+from project.directory import object        *note, one can subset a directory from the project to get classes therein
+
+to determine what gets imported during the >import  dirname  <  step, the __init__.py file needs to be specified to execute
+eg:
+__init__.py
+---------
+'''Predictive modeling of 30-year mortgage rates in the US.'''
+__version__='0.1'
+from .models import MortgageRateModel
+from .utils import read_data
+
+----
+
+there are lots of ways to package and deliver Python code.  2 covered here are setuptools and conda build
+setup.py
+---------
+from setuptools import setup, find_packages
+
+setup(
+        name = "mortgage_forecasts",
+        author = "dds" , 
+        descritpion = '30 year mortgage rate models'
+        license = 'MIT' ,
+        packages = find_packages()
+      )
+------
+
+python setup.py install
+
+
+############## Conda Recipe  (packages)
+conga install conda-build
+
+Python packages are good, but there are no uninstall or updates commands, and we needed to download source code, and create conda env
+note, pip and virtualenv  may be useful too , though conda will take care of uninstalls or updates
+
+note, recipes are specified in file called meta.yaml  ... and conda can contain any language, not just python
+
+Recall:
+>ls
+LICENSE meta.yaml mortgage_forecasts/ setup.py version.py
+
+Conda recepies have 5 sections:   package        source   build      requireemtns     about
+and are found in the meta.yaml file:
+
+
+meta.yaml
+--------------
+{% set setup_py = load_setup_py_data() %}
+
+package:
+    name: 'mortgage_forecasts'
+    version:  {{  setup_py.get('version')  }}
+
+source:
+    path: ./
+    
+build:
+    noarch: python
+    number: 1
+    # If script tag is not present below, then conda build will expect install commands to be ind build.sh or build.bat
+    script: python setup.py install --single-version-externally-managed --record-record.txt
+    
+requirements:
+    run:
+        # Packages that must be installed in the user's conda envrionment to run this package
+            - python >=2.7
+            - pandas >=0.20
+            - scipy
+            - statsmodels
+        
+    build:
+        # Packages used by setup.py to install this package .. may also instll compilers for non-python code.
+            - python
+            - setuptools
+
+about:
+    License:  {{ setup_py.get('license')  }}
+    license_file:  LICENSE
+    summary: {{ setup_py.get('description') }}
+------
+
+from parent directory of the package directory, run:
+>conda build mortgage_forecasts
+
+conda search --use-local --info mortgage_forecasts
+
+----------------
+To install a local package:
+> conda install --use-local  
+
+... from  practice,
+conda create -n models python=3
+conda activate models
+conda install   path/packagepandas version=0.19  --use-local
+
+
+Normally build package on Python 2.7, 3.5, 3.6 , and on Windows Mac and Linux (9 builds)
+but , if invariant, use noarch 
+
+(add to meta.yaml follwoing build tag, before script tag
+noarch: python
+number: 1 
+
+conda build .
+
+ERROR ... this is not executing
+
+---
+
+anaconda upload noarch/mortgage_forecasts-0.1-py_1.tar.bz2
+dschwalm
+Amaadi$GinebigJYYR
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
