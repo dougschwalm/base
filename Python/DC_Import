@@ -493,6 +493,11 @@ print(results)              # will now be sorted
 stmt = select([census.columns.state , scensus.columns.sex])
 stmt = stmt.order_by( census.columns.state , census.columns.sex )
 
+stmt = select([census.columns.state, census.columns.age])             # Build a query to select state and age: stmt
+stmt = stmt.order_by(census.columns.state, desc(census.columns.age) ) # Append order by to ascend by state and descend by age
+results = connection.execute(stmt).fetchall()                  # Execute the statement and store all the records: results
+print(results[:20])                                            # Print the first 20 results
+
 ### Decending Order
 from sqlalchemy import desc
 stmt = select([census.columns.state])                  # Build a query to select the state column: stmt
@@ -500,9 +505,31 @@ rev_stmt = stmt.order_by(desc(census.columns.state))   # Order stmt by state in 
 rev_results = connection.execute(rev_stmt).fetchall()  # Execute the query and store the results: rev_results
 print(rev_results[:10])                                # Print the first 10 rev_results
 
+###### Aggregation functions
+from sqlalchemy import func                           # don't import sum function directly, it will confilct with native sum
+stmt = select([func.sum(census.columns.pop2008)])
+results = connection.execute(stmt).scalar()
+print(results)             # 302876613
 
+### GroupBy
+# sex
+stmt = select([census.columns.sex , func.sum(census.columns.pop2008)])
+stmt = stmp.group_by(census.columns.sex)
+results = connection.execute(stmt).fetchall()
+print(results)             
 
+# sex and age
+stmt = select([census.columns.sex , census.columns.age , func.sum(census.columns.pop2008)])
+stmt = stmp.group_by(census.columns.sex , census.columns.age )
+results = connection.execute(stmt).fetchall()
+print(results)             
 
+# column nanmes for functions ... often func_#   .. unless useing label() method
+print(results[0].keys())            # ['sex', u'sum_1']      from first groupby example
+stmt = select([census.columns.sex , func.sum(census.columns.pop2008).label('pop2008_sum'])
+stmt = stmp.group_by(census.columns.sex)
+results = connection.execute(stmt).fetchall()
+print(results[0].keys())            # ['sex', 'pop2008_sum']      
 
 
 
