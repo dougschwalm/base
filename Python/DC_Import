@@ -453,21 +453,52 @@ results = connection.execute(stmt).fetchall()
 for result in results:
     print(result.state , result.sex)
 
+#### Connecting to PostgreSQL  ... perhaps use psycopg2 database driver to fully facilitate all native functions
+from sqlalchemy import create_engine
+driver_dialect = 'postgresql+psycopg2://'
+userpass = 'student:datacamp'
+hostport = '@postgresql.csrrinzqubik.us-east-1.rds.amazonaws.com:5432/'
+database = 'census' 
+dbase = driver_dialect + userpass + hostport + database
+engine = create_engnie(dbase)
+print(engine.table_names())                                             # ['census', 'state_fact', 'data', 'users']
+##  'postgresql+psycopg2://student:datacamp@postgresql.csrrinzqubik.us-east-1.rds.amazonaws.com:5432/census' 
 
+stmt = select([census])
+stmt = stmt.where(census.columns.state == 'New York')
+results = connection.execute(stmt).fetchall()
+for result in results:
+    print(result.age , result.sex , result.pop2008)
 
+# http://docs.sqlalchemy.org/en/latest/core/sqlelement.html#module-sqlalchemy.sql.expression
 
+#another example
+stmt = select([census])                               # Create a query for the census table: stmt
+stmt = stmt.where(census.columns.state.in_(states))   # Append a where clause to match all the states in_ the list states
+for result in connection.execute(stmt):               # Loop over the ResultProxy & print state and  pop2000
+    print(result.state, result.pop2000)
 
+stmt = stmt.where(         
+    and_(census.columns.state == 'California',                # The state of California with a non-male sex
+         census.columns.sex != 'M'
+         )
+         
+### Order by   (reverse oder by desc()  )
+stmt = select([census.columns.state])
+stmt = stmt.order_by(census.columns.state)
+results = connection.execute(stmt).fetchall()
+print(results)              # will now be sorted
 
+## Multiple columns 
+stmt = select([census.columns.state , scensus.columns.sex])
+stmt = stmt.order_by( census.columns.state , census.columns.sex )
 
-
-
-
-
-
-
-
-
-
+### Decending Order
+from sqlalchemy import desc
+stmt = select([census.columns.state])                  # Build a query to select the state column: stmt
+rev_stmt = stmt.order_by(desc(census.columns.state))   # Order stmt by state in descending order: rev_stmt
+rev_results = connection.execute(rev_stmt).fetchall()  # Execute the query and store the results: rev_results
+print(rev_results[:10])                                # Print the first 10 rev_results
 
 
 
