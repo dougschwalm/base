@@ -1,6 +1,6 @@
 PEP8 , by Guido van Rossum, BDFL
 PEP20 Tim Peters, 20 aphorisms:   >import this
-#### Majic command
+#### Magic command
 !ls
 
 filename = 'huck_finn.txt'
@@ -24,8 +24,8 @@ with open('moby_dick.txt') as file:
 # row , record 
 # columns =fields or attributes or features
 
-########## Using Numpy ########## loadtxt()  
-Numpy can import arrays of all types, or can 
+########## Using Numpy ########## loadtxt() , genfromtxt() , recfromcsv()  
+Numpy can import arrays of all types, or can auto-interpret into structured array (genfromtxt/recfromcsv)
 
 import numpy as np
 filename= 'MNIST.txt'
@@ -82,6 +82,135 @@ plt.scatter(data_float[:, 0], data_float[:, 1])
 plt.xlabel('time (min.)')
 plt.ylabel('percentage of larvae')
 plt.show()
+
+########## Using Pandas ##########
+# standard best practice to put data into data frames with pandas
+import pandas as pd
+filename = 'wine-quality.csv'
+data = pd.read_csv(file)   # delimiter default=,   header=True by default
+data2 = pd.read_csv(file, nrows=5, header=None)   
+data3 = pd.read_csv(file, sep='\t' , comment='#', na_values='Nothing')
+data.head()
+data_array=data.values          # transfers dataframe into numpy array
+print(type(data_array)
+
+pd.DataFrame.hist(data[['Age']])
+plt.xlabel('Age (years)')
+plt.ylabel('count')
+plt.show()
+
+#### keep eye on Feather , made by HadleyWickham and wesmckinney
+
+##### Pickled files  (serialized)
+import pickle
+with open('pickled_fruit.pkl', 'rb') as file:       # 'rb' read, binary
+    data=pickle.load(file)
+print(data)
+print(type(data))
+
+##### Excel Sheets
+import pandas as pd
+file='urbanpop.xls'
+data= pd.ExcelFile(file)
+print(data.sheet_names)
+df1 = data.parse('sheetname')   # text string for sheet
+df2 = data.parse(0)             # sheet index [0,1,2, .. etc
+df3 = data.xl.parse(0,skiprows=1, names=['Country', 'AAM'])        # parse 1st sheet  and rename the columns
+df4 = data.parse(0,parse_cols[0], skiprows=1, names=['Country'])   # parse 1st column, rename to country
+print(df2.head())
+
+##### SAS / Stata 
+import pandas as pd
+from sas7bdat import SAS7BDAT
+with SAS7BDAT('urbanpop.sas7bdat') as file:
+    df_sas=file.to_data_frame()
+pd.DataFrame.hist(df_sas[['P']])         # Print a histogram of one column of the DataFrame
+plt.ylabel('count')
+plt.show()
+
+import pandas as pd
+df = pd.read_stata('urbanpop.dta')
+print(df.head())
+pd.DataFrame.hist(df[['disa10']])        # Print a histogram of one column of the DataFrame
+plt.xlabel('Extent of disease')
+plt.ylabel('Number of countries')
+plt.show()
+
+##### HDF5 files     ..can scale to exabytes
+import h5py
+filename = 'H-H1_LOSC_4_V1-81541100-4096.hdf5'
+data= h5py.File(filename, 'r')   # 'r' for read
+print(type(data)
+
+for key in data.keys():
+    print(key)                   #  meta , quality , strain
+print(type(data['meta']))        # <class 'h5py._hl.group.Group'>
+for key in data['meta'].keys()
+    print(key)                   # Description , DescritptionURL , Detector , Duration ....
+print(data['meta']['Description'].value,data['meta']['Detector'].value)   # b'Strain data'
+
+group = data['strain']          # Get the HDF5 group: group
+for key in group.keys():        # Check out keys of group
+    print(key)
+
+# Example
+strain = data['strain']['Strain'].value     # Set variable equal to time series data: strain
+num_samples = 10000                         # Set number of time points to sample: num_samples
+time = np.arange(0, 1, 1/num_samples)       # Set time vector
+plt.plot(time, strain[:num_samples])        # Plot data
+plt.xlabel('GPS Time (s)')
+plt.ylabel('strain')
+plt.show()
+
+
+### Matlab files ... .mat files  containers for various objects
+scipy.io.loadmat()       scipy.io.savemat()  
+
+import scipy.io
+filename = 'workspace.mat'
+mat = scipy.io.loadmat(filename)
+print(type(mat))            # <class 'dict'>
+print((type(mat['x'}))      # <class 'numpy.ndarray'>
+
+print(mat.keys())
+print(type(mat['CYratioCyt']))         # print the type corresponding to key CYratioCyt
+print(np.shape(mat['CYratioCyt']))     # print the shape of hte value 
+data = mat['CYratioCyt'][25, 5:]
+fig = plt.figure()
+plt.plot(data)
+plt.xlabel('time (min.)')
+plt.ylabel('normalized fluorescence (measure of expression)')
+plt.show()
+
+
+########## Relational Databases ##########    sqlite3  sqlalchemy       ... Todd's 12 Rules (0indexed = 13)
+#####  PostgreSQL , SQLite , mysql , DB2 , SASql , HiveSQL , Structured Query Language
+from sqlalchemy import create_engine
+engine = create_engine('sqlite:///Northwind.sqlite')
+table_names = engine.table_names()
+print(table_names)
+
+SELECT * FROM Table_Name    (Hello World of SQL)
+
+from sqlalchemy import create_engine
+import pandas as pd
+engine = create_engine('sqlite:///Northwind.sqlite')
+
+con = engine.connect()
+rs = con.execute("SELECT * FROM Orders")
+df = pd.DataFrame(rs.fetchall())
+df.columns = rs.keys()
+con.close()
+
+with engine.connect() as con:
+    rs = con.execute("SELECT OrderId, OrderDate, FROM Orders")
+    df = pd.dataFrame(rs.fecthmany(size=5))
+    df.columns = rs.keys()
+
+
+
+
+
 
 
 
