@@ -434,13 +434,24 @@ print(stmt)                                                             # 'SELEC
 print(connection.execute(stmt).fetchall())
 
 
+#### Tailoring statemennts
+stmt = select([census])
+stmt = stmt.where(census.columns.state == 'California')      # >= <= , != , ==   in_()  like()  between()
+results = connection.execute(stmt).fetchall()
+for result in results:
+    print(result.state , result.age)
 
+stmt = select([census])
+stmt = stmt.where(census.columns.state.startswith('New')      # lots of other functions
+for result in connection.execute(stmt):               # note, no fecthmethod ... allows ResultProxy to be used as target of loop
+    print(result.state , result.pop2000)
 
-
-
-
-
-
+from sqlalchemy import or_
+stmt = select([census])
+stmt = stmt.where( or_(census.columns.state =='New York',census.columns.state =='California'))      # Conjunctions and_() not_() or_()
+results = connection.execute(stmt).fetchall()
+for result in results:
+    print(result.state , result.sex)
 
 
 
