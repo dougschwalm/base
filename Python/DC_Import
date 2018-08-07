@@ -286,14 +286,26 @@ pretty_soup = BeautifulSoup.prettify(soup)
 
 
 #####  JSON (JavaScript Object Notation (Douglas Crokford) .. human readable real-time server-to-browser communication
+import json
+with open('snakes.json' , 'r') as json_file:
+    json_data = json.load(json_file)
+print(type(json.data))
+for k in json_data.keys():
+    print(k + ': ', json_data[k])    
 
 
-206
+import requests
+url = 'https://en.wikipedia.org/w/api.php?action=query&prop=extracts&format=json&exintro=&titles=pizza'
+url = 'http://www.omdbapi.com/?t=hackers&apikey=ff21610b'      # ? is a query string .. text follwoing is the query
+url = 'http://www.omdbapi.com/?apikey=ff21610b&t=the+social+network'          # note, apikey needs to be included sometimes
+r= reqeusts.get(url)
+json_data = r.json()                # built in json method!
+for key, value in json_data.items():
+    print(key + ':' , value)
 
-
-
-
-
+# some json reults are nested jsons ... like wikipedia on pizza
+pizza_extract = json_data['query']['pages']['24768']['extract']
+print(pizza_extract)
 
 
 
