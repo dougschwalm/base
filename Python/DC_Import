@@ -216,4 +216,38 @@ df = pd.read_sql_query(sqltext, engine)
 
 
 
+########################## Web Data #######
+
+from urllib.request import urlretrieve                            # similar to urlopen() , but accepts URLs
+url = 'http://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/winequality-white.csv'
+urlretrieve(url, 'winequality-white.csv')           # note, saves the .csv localy
+
+
+from urllib.request import urlretrieve
+import pandas as pd
+url='https://s3.amazonaws.com/assets.datacamp.com/production/course_1606/datasets/winequality-red.csv'
+urlretrieve(url,'winequality-red.csv')
+df = pd.read_csv('winequality-red.csv', sep=';')       # Read local file into a DataFrame and print its head
+print(df.head())
+
+df = pd.read_csv(url, sep=';')                         # Read url directly into a DataFrame and print its head
+print(df.head())
+
+pd.DataFrame.hist(df.ix[:, 0:1])                             # Plot first column of df
+plt.xlabel('fixed acidity (g(tartaric acid)/dm$^3$)')
+plt.ylabel('count')
+plt.show()
+
+
+
+#### Importing url to panda dictionary without local data save , even with excel data
+import pandas as pd                    # Import package
+url = 'http://s3.amazonaws.com/assets.datacamp.com/course/importing_data_into_r/latitude.xls'
+xl = pd.read_excel(url,sheetname=None)  # Read in all sheets of Excel file: xl , sheets are keys
+print(type(xl))                         # <class 'dict'>
+print(xl.keys())                        # Print the sheetnames to the shell
+print(xl['1700'].head())                # Print the head of the first sheet (using its name, NOT its index)
+
+
+
 
