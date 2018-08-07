@@ -670,7 +670,7 @@ for key in result.keys():                        # Loop over the keys in the res
 stmt = select([
     census.columns.state ,
     func.sum(census.columns.pop2008) ,
-    state_fact_columns.census_division_name
+    state_fact.columns.census_division_name
 ])
 
 # Append select_from to join the census and state_fact tables by the census state and state_fact name columns
@@ -683,26 +683,68 @@ for record in results:                                 # Loop over the the resul
     print(record)
 
 
+#### Hierarchial Tables (self referential tables)     .... use alias() method for temp rename
+# Eg, Employees ... wehre manager column has and id number that refers to a row in the same table of employees
+
+managers = employees.alias()                            # managers points to employees, but now has unique name
+stmt = select(
+    [managers.columns.name.label('manager') ,
+     employees.columns.name.label('employee')           # if using a function on a column, do so on the non-alias table
+    ])
+stmt = stmt.select_from( employees.join(managers, 
+    managers.columns.id == employees.columns.manager
+    )
+stmt = stmt.order_by(managers.columns.name)             # note that we group by the table made in the alias
+print(connection.execute(stmt).fetchall())
+
+### important to target group_by() at the right alias
+
+### Example
+managers = employees.alias()                            # Make an alias of the employees table: managers
+stmt = select(                                          # Build a query to select manager's and their employees names
+    [managers.columns.name.label('manager'),
+     employees.columns.name.label('employee')]
+)
+stmt = stmt.where(managers.columns.id == employees.columns.mgr)  # Match managers id with employees mgr: stmt
+stmt = stmt.order_by(managers.columns.name)                       # Order the statement by the managers name: stmt
+results = connection.execute(stmt).fetchall()
+for record in results:
+    print(record)
+*** Produces:
+SELECT employees_1.name AS manager, 
+        employees.name AS employee 
+FROM employees AS employees_1, employees 
+WHERE employees_1.id = employees.mgr 
+ORDER BY employees_1.name
 
 
 
+managers = employees.alias()
+stmt = select([managers.columns.name, func.count(employees.columns.name)])
+stmt = stmt.where(managers.columns.id == employees.columns.mgr)
+stmt = stmt.group_by(managers.columns.id)
+results = connection.execute(stmt).fetchall()
+for record in results:
+    print(record)
+
+SELECT employees_1.name, 
+       count(employees.name) AS count_1 
+FROM employees AS employees_1, employees 
+WHERE employees_1.id = employees.mgr 
+GROUP BY employees_1.name
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+###### Dealing with lots of results in the ResultSet  ... just take chunks
+while more_results:
+    partial_results = results_proxy.fetchmany(50)
+    if partial_resutls==[]:
+        more_results = False
+        
+    for row in partial_results:
+        state_count[row.state] += 1
+    else: 
+        state_count[row.state = 1
+results_proxy.close()
 
 
 
