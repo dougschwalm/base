@@ -1,1 +1,12 @@
-test
+filename = 'huck_finn.txt'
+file = open(filename , mode='r')    # 'r' is to read
+file = open(filename , mode='w')    # 'w' is to read
+text = file.read()
+file.close()
+print(text)
+
+# Context managers will automatoicall close files, and bind variable with the open statement
+with open(filename, mode='r') as file:
+    print(file.read())
+    
+    
