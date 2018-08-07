@@ -274,17 +274,21 @@ html_doc = r.text
 soup = BeautifulSoup(html_doc)
 print(soup.title)
 print(soup.get_text())
-for link in soup.find_all('a'):
+a_tags = soup.find_all('a')
+for link in a_tags:                 # Print the URLs to the shell
+    print(link.get('href'))
+
+for link in soup.find_all('a'):      # shortcut
     print(link.get('href'))
 
 
+pretty_soup = BeautifulSoup.prettify(soup)
 
 
+#####  JSON (JavaScript Object Notation (Douglas Crokford) .. human readable real-time server-to-browser communication
 
 
-
-
-
+206
 
 
 
