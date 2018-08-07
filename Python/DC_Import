@@ -220,7 +220,7 @@ df = pd.read_sql_query(sqltext, engine)
 
 from urllib.request import urlretrieve                            # similar to urlopen() , but accepts URLs
 url = 'http://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/winequality-white.csv'
-urlretrieve(url, 'winequality-white.csv')           # note, saves the .csv localy
+urlretrieve(url, 'winequality-white.csv')           # note, saves the .csv localy  (makes GET request, and local save)
 
 
 from urllib.request import urlretrieve
@@ -247,6 +247,51 @@ xl = pd.read_excel(url,sheetname=None)  # Read in all sheets of Excel file: xl ,
 print(type(xl))                         # <class 'dict'>
 print(xl.keys())                        # Print the sheetnames to the shell
 print(xl['1700'].head())                # Print the head of the first sheet (using its name, NOT its index)
+
+
+
+##### getting HTTP GET
+from urllib.request import urlopen, Request
+url = 'https://www.wikipedia.org/'
+reqeust = Reqeust(url)
+response = urlopen(request)
+html = response.read()
+print(type(html))
+response.close()
+
+# better automated using the Requests package
+import requests
+url = 'https://www.wikipedia.org/'
+r= reqeusts.get(url)
+text = r.text
+
+
+from bs4 import BeautifulSoup
+import requsts
+url = 'https://www.crummy.com/software/BeautifulSoup/'
+r= requsts.get(url)
+html_doc = r.text
+soup = BeautifulSoup(html_doc)
+print(soup.title)
+print(soup.get_text())
+for link in soup.find_all('a'):
+    print(link.get('href'))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
