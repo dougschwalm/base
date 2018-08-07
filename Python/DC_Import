@@ -206,9 +206,12 @@ with engine.connect() as con:
     rs = con.execute("SELECT OrderId, OrderDate, FROM Orders")
     df = pd.dataFrame(rs.fecthmany(size=5))
     df.columns = rs.keys()
+print(len(df))
 
 
-
+## import with pandas
+sqltext ="SELECT Title , Name FROM Album INNER JOIN Artist ON Album.ArtistID = Artist.ArtistID WHERE Mills<250000"
+df = pd.read_sql_query(sqltext, engine)
 
 
 
