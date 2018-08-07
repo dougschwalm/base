@@ -390,22 +390,48 @@ plt.show()
 
 ####################################  Intro to Databases ####################################
 # Secquence strings:   'Driver+Dialect:///Filename'
-# Reflection reads database and builds SQLAlchemy Table objects
+# Reflection reads database and builds SQLAlchemy Table objects automatically, without lots of handwork
 
 from sqlalchemy import create_engine                     # note db2 is an external dialect http://docs.sqlalchemy.org/en/latest/dialects/
 engine = create_engine('sqlite://census_nyc.sqlite')     # https://github.com/ibmdb/python-ibmdb
 connection = engine.connect()
-print(engine.table_names())
+print(engine.table_names())                             # 'census' , ''
 
 from sqlalchemy import MetaData, Table              # Metadta object is a catalog storing database info (eg tables)
 metadata = MetaData()                               # Reflects the data by initializing a Metadata object
 census = Table('census', metadata, autoload=True, autoload_with=engine)    #
 print(repr(census))                                 # allows us to see names of columns and column types
 
+print(census.columns.keys())                        # Pritn column names
+print(repr(metadata.tables['census']))              # Print full table metadata
 
 
+##### basic sql querying
+from sqlalchemy import create_engine
+engine = create_engine('sqlite:///census_nyc.sqlite')
+connection = engine.connect()
+stmt = 'SELECT * FROM people'
+result_proxy = connection.execute(stmt)             # obtains ReslutProxy object, 
+results = results_proxy.fetchall()                  # results will contain all the data queried in the ResultSet
+
+first_row= results[0]
+print(first_row)            # ('Illinois', 'M', 0, 89600, 95012
+print(first_row.keys())     # ['state' , 'sex' , 'age', 'pop2000' , 'pop2008']
+print(first_row.state)      # 'Illinois'
+print(first_row['state'])   # 'Illinois'
 
 
+### SQLAlchemy querying
+from sqlalchemy import Table, MetaData, select
+engine = create_engine('sqlite:///census_nyc.sqlite')
+connection = engine.connect()
+metadata = MetaData()
+census = Table('census', metadata, autoload=True, autoload_with=engine)    #
+stmt = select([census])                                                # selects all the rows and columns of census table
+results = connection.execute(stmt).fecthall()                          # Combines ResultProxy and ResultSet obtain all the results
+print(stmt)                                                             # 'SELECT * from CENSUS'
+
+print(connection.execute(stmt).fetchall())
 
 
 
