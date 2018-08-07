@@ -308,7 +308,7 @@ pizza_extract = json_data['query']['pages']['24768']['extract']
 print(pizza_extract)
 
 
-##### Twitter API and authentification     (note, need to login and get tokens)
+##### Twitter API and authentification     (note, need to login and get tokens, and create Twitter App)
 import tweepy, json
 access_token        = "..."
 access_token_secret = "..."
@@ -343,15 +343,37 @@ stream tweepy.Stream(auth,l)
 stream.filter(track=['apples','oranges'])        # filters Twitter Streams to capture by keyword
         
 
+#### Example Import package 
+import tweepy
 
 
+# Load and explore twitter data (from file on path)
+import json
+tweets_data_path = 'tweets.txt'
+tweets_data = []                                    # Initialize empty list to store tweets: tweets_data, list of dictionaries
+tweets_file = open(tweets_data_path, "r")           # Open connection to file
+for line in tweets_file:                            # Read in tweets and store in list: tweets_data
+    tweet = json.loads(line)                        # Each tweet is a dictionary
+    tweets_data.append(tweet)                       # append to the list of dictionaries
+
+tweets_file.close()                                  # Close connection to file
 
 
+### Twitter to data Frame   ... make each row a tweet , and 2 columns, text and lang, from t['text'] and t['lang']
+import pandas as pd
+df = pd.DataFrame(tweets_data,['text','lang']            #  from list of dictionaries, extract the columns listed in list
+print(df.head())
 
+# Initialize list to store tweet counts
+[clinton, trump, sanders, cruz] = [0, 0, 0, 0]
 
-
-
-
+# Iterate through df, counting the number of tweets in which
+# each candidate is mentioned
+for index, row in df.iterrows():
+    clinton += word_in_text('clinton', row['text'])
+    trump += word_in_text('trump', row['text'])
+    sanders += word_in_text('sanders', row['text'])
+    cruz += word_in_text(cruz, row['text'])
 
 
 
