@@ -388,4 +388,259 @@ ax.set(ylabel="count")
 plt.show()
 
 
+####################################  Intro to Databases ####################################
+# Secquence strings:   'Driver+Dialect:///Filename'
+# Reflection reads database and builds SQLAlchemy Table objects
+
+from sqlalchemy import create_engine                     # note db2 is an external dialect http://docs.sqlalchemy.org/en/latest/dialects/
+engine = create_engine('sqlite://census_nyc.sqlite')     # https://github.com/ibmdb/python-ibmdb
+connection = engine.connect()
+print(engine.table_names())
+
+from sqlalchemy import MetaData, Table              # Metadta object is a catalog storing database info (eg tables)
+metadata = MetaData()                               # Reflects the data by initializing a Metadata object
+census = Table('census', metadata, autoload=True, autoload_with=engine)    #
+print(repr(census))                                 # allows us to see names of columns and column types
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+##### Remote Import
+
+after going through the source code of PyHive, I understood that pip install PyHive install a different code than the one 
+at https://github.com/dropbox/PyHive (even though the version are the same)
+1) so I uninstalled previous version of pyhive
+2) downloaded the souce from https://github.com/dropbox/PyHive and installed this
+3) now im able to connect to remote hive using username/password
+---- code -----
+from pyhive import hive
+conn = hive.Connection(host="<host>", port=10000, username="<username>", password="<your pwd>", auth='CUSTOM')
+cur = conn.cursor()
+cur.execute('select * from <table>');
+print cur.fetchone()
+
+ibm-db, the official DB2 driver for Python and Django is here:
+
+https://code.google.com/p/ibm-db/
+Here's a recent tutorial for how to install everything on Ubuntu Linux:
+
+http://programmingzen.com/2011/05/12/installing-python-django-and-db2-on-ubuntu-11-04/
+I should mention that there were several older unofficial DB2 drivers for Python. ibm-db is the one you should be using.
+
+-------------------------------------------------
+The documentation is difficult to find, and once you find it, it's pretty abysmal. Here's what I've found over the past 3 hours.
+
+You need to install ibm_db using pip, as follows:
+
+pip install ibm_db
+You'll want to create a connection object. The documentation is here.
+
+Here's what I wrote:
+
+from ibm_db import connect
+# Careful with the punctuation here - we have 3 arguments.
+# The first is a big string with semicolons in it.
+# (Strings separated by only whitespace, newlines included,
+#  are automatically joined together, in case you didn't know.)
+# The last two are emptry strings.
+connection = connect('DATABASE=<database name>;'
+                     'HOSTNAME=<database ip>;'  # 127.0.0.1 or localhost works if it's local
+                     'PORT=<database port>;'
+                     'PROTOCOL=TCPIP;'
+                     'UID=<database username>;'
+                     'PWD=<username password>;', '', '')
+Next you should know that commands to ibm_db never actually give you results. 
+Instead, you need to call one of the fetch methods on the command, repeatedly, to get the results. 
+I wrote this helper function to deal with that.
+
+def results(command):
+    from ibm_db import fetch_assoc
+
+    ret = []
+    result = fetch_assoc(command)
+    while result:
+        # This builds a list in memory. Theoretically, if there's a lot of rows,
+        # we could run out of memory. In practice, I've never had that happen.
+        # If it's ever a problem, you could use
+        #     yield result
+        # Then this function would become a generator. You lose the ability to access
+        # results by index or slice them or whatever, but you retain
+        # the ability to iterate on them.
+        ret.append(result)
+        result = fetch_assoc(command)
+    return ret  # Ditch this line if you choose to use a generator.
+Now with that helper function defined, you can easily do something like get the 
+information on all the tables in your database with the following:
+
+from ibm_db import tables
+
+t = results(tables(connection))
+If you'd like to see everything in a given table, you could do something like this now:
+
+from ibm_db import exec_immediate
+
+sql = 'LIST * FROM ' + t[170]['TABLE_NAME']  # Using our list of tables t from before...
+rows = results(exec_immediate(connection, sql))
+And now rows contains a list of rows from the 170th table in your database, where every row contains a dict of column name: value.
+
+Hope this all helps
+---------------------------------------
+https://www.ibm.com/support/knowledgecenter/SSEPGG_9.7.0/com.ibm.swg.im.dbclient.python.doc/doc/t0054367.html
+Before you can connect to an IBM® database server and run SQL statements, you must set up 
+the Python environment by installing the ibm_db (Python) driver and, optionally, the 
+ibm_db_sa (SQLAlchemy) or ibm_db_django (Django) adapter.
+*Ensure that the following software is installed on your system:
+**Python 2.5 or later. For Linux operating systems, you also require the python2.5-dev package.
+**The setuptools program or the distribute program. The setuptools program is available at 
+   http://pypi.python.org/pypi/setuptools, and the distribute program is available at 
+   http://pypi.python.org/pypi/distribute. You can use the setuptools program or the distribute program to 
+   download, build, install, upgrade, and uninstall Python packages.
+If your Python application will connect to a remote IBM database, one of the following products on the 
+  computer where your application will run:
+The IBM Data Server Client product
+The IBM Data Server Runtime Client product
+The IBM Data Server Driver Package product
+The IBM Data Server Driver for ODBC and CLI product
+If your Python application connects to an IBM database server on the local computer, no additional 
+ IBM data server products are required.
+
+#####Procedure
+To set up the Python environment:
+
+Using one of the following two methods, install the ibm_db Python driver:
+Install from the remote repository:
+Set the IBM_DB_HOME environment variable by using the export command:
+$export IBM_DB_HOME=DB2HOMEcopy to clipboard
+where DB2HOME is the directory where the IBM data server product is installed.
+For example, issue the following command to set the IBM_DB_HOME environment variable:
+$ export IBM_DB_HOME=/home/db2inst1/sqllibcopy to clipboard
+Issue the following command:
+$ easy_install ibm_db copy to clipboard
+Use the files that are included with the IBM data server products. The IBM data server client and IBM Data Server Driver Package software include the required Python files.
+Change the current path to the IBM data server product installation path where the Python egg files are located (IBM_DB_HOME/pythonXX).
+Issue the following command:
+$ easy_install ibm_db-X.X.X-pyX.X-XXXXXXXX.eggcopy to clipboard
+Optional: Using one of the following two methods, install the ibm_db_sa SQLAlchemy adapter or the ibm_db_django Django adapter:
+Install from the remote repository:
+To install the SQLAlchemy adapter, issue the following command:
+$ easy_install ibm_db_sacopy to clipboard
+To install the django adapter, issue the following command:
+$ easy_install ibm_db_djangocopy to clipboard
+Use the files that are included with the IBM data server products:
+Change the current path to the IBM data server product installation path where the Python egg files are located (IBM_DB_HOME/pythonXX).
+To install the SQLAlchemy adapter, issue the following command:
+$ easy_install ibm_db_sa-X.X.X-pyX.X.eggcopy to clipboard
+To install the django adapter, issue the following command:
+$ easy_install ibm_db_django-X.X.X-pyX.X.eggcopy to clipboard
+Ensure that the Python driver can access the libdb2.so CLI driver file:
+For 32-bit Linux and UNIX operating systems other than the AIX operating system, set the LD_LIBRARY_PATH variable to the IBM_DB_HOME/lib32 directory by issuing the export command:
+export LD_LIBRARY_PATH=IBM_DB_HOME/lib32copy to clipboard
+For 64-bit Linux and UNIX operating systems other than the AIX operating system, set the LD_LIBRARY_PATH variable to the IBM_DB_HOME/lib64 directory by issuing the export command:
+export LD_LIBRARY_PATH=IBM_DB_HOME/lib64copy to clipboard
+For a 32-bit AIX operating system, set the LIBPATH variable to theIBM_DB_HOME/lib32 directory by issuing the export command:
+export LIBPATH=IBM_DB_HOME/lib32copy to clipboard
+For a 64-bit AIX operating system, set the LIBRARY_PATH variable to the IBM_DB_HOME/lib64 directory by issuing the export command:
+export LIBPATH=IBM_DB_HOME/lib64
+
+
+
+https://www.ibm.com/support/knowledgecenter/en/SSEPGG_9.7.0/com.ibm.swg.im.dbclient.python.doc/doc/t0054368.html
+ibm_db.connect
+ibm_db.pconnect          # creates persistent connection
+Example 1: Connect to a local or cataloged database
+
+import ibm_db
+conn = ibm_db.connect("database","username","password")copy to clipboard
+Example 2: Connect to an uncataloged database
+
+import ibm_db
+ibm_db.connect("DATABASE=name;HOSTNAME=host;PORT=60000;PROTOCOL=TCPIP;UID=username;
+                PWD=password;", "", "")
+
+After connecting to a database, use functions available in the ibm_db API to prepare and execute SQL statements. The SQL statements can contain static text, XQuery expressions, or parameter markers that represent variable input.
+
+### Preparing and executing a single SQL statement in Python
+To prepare and execute a single SQL statement, use the function:    ibm_db.exec_immediate 
+
+###Preparing and executing SQL statements with variable input in Python
+To prepare and execute an SQL statement that includes variable input, use the functions:
+    ibm_db.prepare, ibm_db.bind_param, and ibm_db.execute 
+Preparing a statement improves performance because the database server creates an 
+optimized access plan for data retrieval that it can reuse if the statement is executed again.
+
+
+
+
+
+
+
+
+
+
+
+
 
