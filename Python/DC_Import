@@ -1,3 +1,8 @@
+PEP8 , by Guido van Rossum, BDFL
+PEP20 Tim Peters, 20 aphorisms:   >import this
+#### Majic command
+!ls
+
 filename = 'huck_finn.txt'
 file = open(filename , mode='r')    # 'r' is to read
 file = open(filename , mode='w')    # 'w' is to read
@@ -9,4 +14,74 @@ print(text)
 with open(filename, mode='r') as file:
     print(file.read())
     
+# Read & print the first 3 lines
+with open('moby_dick.txt') as file:
+    print(file.readline())
+    print(file.readline())
+    print(file.readline())
     
+
+# row , record 
+# columns =fields or attributes or features
+
+########## Using Numpy ########## loadtxt()  
+Numpy can import arrays of all types, or can 
+
+import numpy as np
+filename= 'MNIST.txt'
+data=np.loadtxt(filename, delimiter=',')  # delimiter is whitespace by default
+data=np.loadtxt(filename, delimiter=',' , skiprows=1, usecols=[0,2])
+data=np.loadtxt(filename, delimiter=',' , skiprows=1, usecols=[0,2], dtype=str)  # import all data as str
+data=np.loadtxt(filename, delimiter=',' , skiprows=1, usecols=[0,2], dtype=float)  # all data are floats
+print(data[9])   # Prints 10th line
+
+#mixed data types  structured array... 1D arraw , where each element of arraw is a row of the flat file
+data = np.genfromtxt(filename, delimiter=',', names=True, dtype=None)    # names=True if header, dtype=None for auto
+
+file = 'titanic.csv'
+data=np.recfromcsv(file)  #  dtype=None, delimiter=',' by default
+print(data[:3])   # prints out first three enteries of d
+
+##### Example Import package
+import numpy as np
+
+# Assign filename to variable: file
+file = 'digits.csv'
+
+# Load file as array: digits
+digits = np.loadtxt(file, delimiter=',')
+
+# Print datatype of digits
+print(type(digits))
+
+# Select and reshape a row
+im = digits[21, 1:]
+im_sq = np.reshape(im, (28, 28))
+
+# Plot reshaped data (matplotlib.pyplot already loaded as plt)
+plt.imshow(im_sq, cmap='Greys', interpolation='nearest')
+plt.show()
+
+# Assign filename: file
+file = 'seaslug.txt'
+
+###### Example Import file: data
+data = np.loadtxt(file, delimiter='\t', dtype=str)
+
+# Print the first element of data
+print(data[0])
+
+# Import data as floats and skip the first row: data_float
+data_float = np.loadtxt(file, delimiter='\t', dtype=float, skiprows=1)
+
+# Print the 10th element of data_float
+print(data_float[9])
+
+# Plot a scatterplot of the data
+plt.scatter(data_float[:, 0], data_float[:, 1])
+plt.xlabel('time (min.)')
+plt.ylabel('percentage of larvae')
+plt.show()
+
+
+
