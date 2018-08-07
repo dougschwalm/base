@@ -565,6 +565,141 @@ print(df)
 df[10:20].plot.barh()
 plt.show()
 
+### Calculations
+stmt = select([census.columsn.age , census.clumns.pop2008-census.columns.pop2000).label('pop_change)  ])
+stmt = stmt.group_by(census.columns.age)
+stmt = stmt.order_by(desc('pop_change'))
+stmt = stmt.limit(5)           # limits for top 5 results
+results = connection.execute(stmt).fetchall()
+print(results)
+
+
+### Case statements for conditional calcuations
+stmt = select([
+    func.sum(
+        case([
+            (census.columns.state == 'New York',
+             census.coulumns.pop2008)
+        ], else_=0))])
+results = connection.execute(stmt).fetchall()
+print(results)
+
+
+#### Cast Statement (int -> float for division ; strings -> dates and times
+### Percentage example
+from sqlalchemy import case, cast , Float
+stmt= select([
+    (func.sum(
+        case([
+            (census.columns.state == 'New York',
+             census.columns.pop2008)
+        ], else_0)) /
+    cast(func.sm(census.columns.pop2008),
+        Float) *100).label('nypercent')])
+results= connection.execute(stmt).fetchall()
+print(results)      #[(Decimal('6.4267619765'),)]
+        
+  
+#### MySQL example  (perhaps use pymysql )
+driverdialect = 'mysql+pymysql://'
+userpass = 'username:password'
+hostport = '@host:port/'
+database = 'database_name'
+'mysql+pymysql://student:datacamp@courses.csrrinzqubik.us-east-1.rds.amazonaws.com:3306/census'
+
+# Build query to return state names by population difference from 2008 to 2000: stmt
+stmt = select([census.columns.state , (census.columns.pop2008-census.columns.pop2000).label('pop_change')])
+stmt = stmt.group_by(census.columns.state)            # Append group by for the state: stmt
+stmt = stmt.order_by(desc('pop_change'))              # Append order by for pop_change descendingly: stmt
+stmt = stmt.limit(5)                                  # Return only 5 results: stmt
+results = connection.execute(stmt).fetchall()         # Use connection to execute the statement and fetch all results
+for result in results:                                # Print the state and population change for each record
+    print('{}:{}'.format(result.state, result.pop_change))
+
+# import case, cast and Float from sqlalchemy
+from sqlalchemy import case, cast, Float
+# Build an expression to calculate female population in 2000
+female_pop2000 = func.sum(
+    case([
+        (census.columns.sex == 'F', census.columns.pop2000)
+    ], else_=0))
+total_pop2000 = cast(func.sum(census.columns.pop2000), Float)  # Cast an expression to calculate total population in 2000 to Float
+stmt = select([female_pop2000 / total_pop2000 * 100])   # Build a query to calculate the percentage of females in 2000: stmt
+percent_female = connection.execute(stmt).scalar()      # Execute the query and store the scalar result: percent_female
+print(percent_female)                                   # Print the percentage , 51.0946743229
+
+
+##### Automatic joins       (some keys predefined in database   :  census.state <==> state_fact.name
+stmt = select([census.columns.pop2008, state_fact.columns.abbreviation])         # note, one non-key column from each table
+results = connection.execute(stmt).fetchall()
+print(results)
+
+# Normally join clauses are right after select, and before any where() order_by() or group_by() , but not needed if 
+# it is predefined and available via reflection
+
+stmt = select([func.sum(census.columns.pop2000)])
+stmt = stmt.select_from(census.join(state_fact))            #   needs predefined relationship?
+stmt = stmt.where(state_fact.columns.circuit_court == '10')
+result = connection.execute(stmt).scalar()
+print(result)                           # 14945252
+
+### when the relationship is not predefined, must specify   .join(object2join, matchrelationship)
+stmt = select([func.sum(census.columns.pop2000)])
+stmt = stmt.select_from(census.join(state_fact ,  census.columns.state == state_fact.columns.name ))
+stmt = stmt.where( staet_fact.columns.census_division_name == 'East Sout Centeral')
+result = connection.execute(stmt).scalar()
+print(result)                #16
+
+# Loop over the keys in the result object and print the key and value   (note, used execute(stmt).first()
+for key in result.keys():
+    print(key, getattr(result, key))
+
+
+#### Another example
+stmt = select([census, state_fact])                    # Build a statement to select the census and state_fact tables: stmt
+
+# Add a select_from clause that wraps a join for the census and state_fact
+# tables where the census state column and state_fact name column match
+stmt = stmt.select_from(  census.join(state_fact, census.columns.state == state_fact.columns.name))
+
+result = connection.execute(stmt).first()                # Execute the statement and get the first result: result
+for key in result.keys():                        # Loop over the keys in the result object and print the key and value
+    print(key, getattr(result, key))
+
+# Build a statement to select the state, sum of 2008 population and census  division name: stmt
+stmt = select([
+    census.columns.state ,
+    func.sum(census.columns.pop2008) ,
+    state_fact_columns.census_division_name
+])
+
+# Append select_from to join the census and state_fact tables by the census state and state_fact name columns
+stmt = stmt.select_from(
+    census.join(state_fact, census.columns.state == state_fact.columns.name)
+)
+stmt = stmt.group_by(state_fact.columns.name)          # Append a group by for the state_fact name column
+results = connection.execute(stmt).fetchall()          # Execute the statement and get the results: results
+for record in results:                                 # Loop over the the results object and print each record.
+    print(record)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
