@@ -48,17 +48,40 @@ df.plot(kind='scatter', x='initial_cost', y='total_est_fee', rot=70)
 
 
 
-########## Tidy Data
+########## Tidy Data   Hadly Wickham, 2014  ... columns=variables, rows=individuals (not fully wide, but not stacked)
+# "Every column is a variable, and every row is an observation"
+
+## When columns contain values instead of variables, use pd.melt()
+pd.melt(frame=df, id_vars='name' , value_vars=['treatment a','treatment b']
+                                   var_name='treatment, value_name='result')         # moves value_vars from wide to long
+
+## When Columns contain variables that should be wide, use pd.pivot
+weather_tidy = weather.pivot(index='date', columns='element', values='value')     # index is the id var, columns are the vars to widen
+
+# pivot() method will fail if there are duplicate ids .... in that case, use pivot_table
+weather2_tidy = weather.pivot_table(index='date', columns='element', values='value', aggfunc=np.mean )
+
+airquality_pivot = airquality_melt.pivot_table(index=['Month','Day'], columns='measurement', values='reading')
+
+### To fix a hierarchial index, just reset it
+print(airquality_pivot.index)                                # Print the index of airquality_pivot
+airquality_pivot_reset = airquality_pivot.reset_index()      # Reset the index of airquality_pivot: airquality_pivot_reset
+print(airquality_pivot_reset.index                           # Print the new index of airquality_pivot_reset
+print(airquality_pivot_reset.head())                         # Print the head of airquality_pivot_reset
+
+
+### Sometimes variables are convoluted in columns ...eg Male0-14 Male15-24 ... ideally want separate sex and age columns
+tb_melt = pd.melt(frame=tb , id_vars=['country','year'])           #melt everything down into a stack
+tb_melt['sex'] = tb_melt.variable.str[0]                           # sex is the first character of the word in 'variable'
+tb_melt['age_group'] = tb_melt.variable.str[1:]
 
 
 
-
-
-
-
-
-
-
+ebola_melt = pd.melt(ebola, id_vars=['Date', 'Day'], var_name='type_country', value_name='counts')
+ebola_melt['str_split'] = ebola_melt.type_country.str.split('_')               # Create the 'str_split' column
+ebola_melt['type'] = ebola_melt.str_split.str.get(0)                      # Create the 'type' column
+ebola_melt['country'] = ebola_melt.str_split.str.get(1)                 # Create the 'country' column
+print(ebola_melt.head())                                                 # Print the head of ebola_melt
 
 
 
