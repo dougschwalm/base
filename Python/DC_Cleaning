@@ -84,18 +84,30 @@ ebola_melt['country'] = ebola_melt.str_split.str.get(1)                 # Create
 print(ebola_melt.head())                                                 # Print the head of ebola_melt
 
 
+########## Combining Data   ##########
+# Row-wise (appending ... axis=0 , default)
+concat_data = pd.concat([data1, data2])           # note, original indicies will be kept  so concat_dat.loc[0,:] has multiple rows
+concat_data = pd.concat([data1, data2] , ignore_index=True)        # resets index label
 
+# Columnwise (joining  ... axis=1)
+ebola_tidy = pd.concat([ebola_melt,status_country],axis=1)
 
+### to create very long lists of concatinate objects, use globbing , which will return a list of matches
+import glob
+csv_files = glob.glob('*.csv')
+list_data = []
+for filename in csv_files:
+    data = pd.read_csv(filename)           # note, to proof, use : peek= pd.read_csv(csv_files[1]) ... peek.head() ,etc
+    list_data.append(data)                # list of data frames
+pd.concat(list_data)
 
+##### Merging           1:1 , many:1 or 1:many just depend on keys and right/left
+pd.merge(left=state_populations, right=state_codes,
+         on=None, left_on='state' , right_on='name')          # if common key is named differntly, need to use on=None
 
-
-
-
-
-
-
-
-
+# Merge the DataFrames: m2o
+m2o = pd.merge(left=site, right=visited,
+          on=None, left_on='name' , right_on='site')
 
 
 
