@@ -788,6 +788,137 @@ results = connection.execute(stmt)
 stmt = select([data]).where(data.columns.name == 'Anna')       # Build a select statement to validate the insert
 print(connection.execute(stmt).first())                        # Print the result of executing the query.
 
+### Loading a CSV into a Table
+
+We have used the csv module to set up a csv_reader, which is just a reader object that can iterate 
+over the lines in a given CSV file - in this case, a census CSV file. Using the enumerate() function, 
+you can loop over the csv_reader to handle the results one at a time. Here, for example, the first line it would return is:
+    0 ['Illinois', 'M', '0', '89600', '95012']
+0 is the idx - or line number - while ['Illinois', 'M', '0', '89600', '95012'] is the row, corresponding 
+to the column names 'state' , 'sex', 'age', 'pop2000 'and 'pop2008'. 'Illinois' can be accessed with row[0], 
+'M' with row[1], and so on. You can create a dictionary containing this information where the keys are the 
+column names and the values are the entries in each line. Then, by appending this dictionary to a list, you 
+can combine it with an insert statement to load it all into a table!
+
+stmt = insert(census)                      # Create a insert statement for census: stmt
+
+values_list = []                           # Create an empty list and zeroed row count: values_list, total_rowcount
+total_rowcount = 0
+
+for idx, row in enumerate(csv_reader):                            # Enumerate the rows of csv_reader
+                                                                  #create data and append to values_list
+    data = {'state': row[0], 'sex': row[1], 'age': row[2], 'pop2000': row[3], 'pop2008': row[4] }   
+    values_list.append(data)
+
+    if idx % 51 == 0:                                                   # Check to see if divisible by 51
+        results = connection.execute(stmt, values_list)
+        total_rowcount += results.rowcount
+        values_list = []
+
+print(total_rowcount)               # Print total rowcount      = 8722
+
+
+##### Updating Data in a database  ....... like insert, but with a where clause
+from sqlalchemy import update
+stmt = update(employees)
+stmt = stmt.where(employees.columns.id ==3)
+stmt = stmt.values(active=True)
+result_proxy = connection.execute(stmt)
+print(result_proxy.rowcount)                        # 1
+
+### multiple records
+from sqlalchemy import update
+stmt = update(employees)
+stmt = stmt.where(employees.columns.active == True)
+stmt = stmt.values(active=False, salary=0.00)
+result_proxy = connection.execute(stmt)
+print(result_proxy.rowcount)                        # 3
+
+# correlated updates (paying all employees the max salary)
+new_salary = select([employees.columns.salary])
+new_salary = new_salary.order_by(desc(employees.columns.salary))
+new_salary = new_salary.limit(1)
+stmt = update(employees)
+stmt = stmt.values(salary=new_salary)
+result_proxy = connection.execute(stmt)
+print(result_proxy.rowcount)                        # 3
+
+
+
+select_stmt = select([state_fact]).where(state_fact.columns.name == 'New York')  # Build a select statement: select_stmt
+print(connection.execute(select_stmt).fetchall())         # Print the results of executing the select_stmt
+
+stmt = update(state_fact).values(fips_state = 36)         # Build a statement to update the fips_state to 36: stmt
+stmt = stmt.where(state_fact.columns.name == 'New York')  # Append a where clause to limit it to records for New York state
+results = connection.execute(stmt)                        # Execute the statement: results
+print(results.rowcount)                                   # Print rowcount
+print(connection.execute(select_stmt).fetchall())         # Execute the select_stmt again to view the changes
+
+
+
+fips_stmt = select([state_fact.columns.name])              # Build a statement to select name from state_fact: stmt
+fips_stmt = fips_stmt.where(                           # Append a where clause to Match the fips_state to flat_census fips_code
+    state_fact.columns.fips_state == flat_census.columns.fips_code
+    )
+update_stmt = update(flat_census).values(state_name=fips_stmt) # Build an update statement to set the name to fips_stmt: update_stmt
+results = connection.execute(update_stmt)                        # Execute update_stmt: results
+print(results.rowcount)
+
+### Removing data from table
+
+### Deleting all data from a table
+from sqlalchemy import delete
+stmt = select([
+            func.count(extra_employees.columns.id)
+            ])
+connection.execute(stmt).scalar()               #3
+delete_stmt = delete(extra_employees)
+result_proxy = connection.execute(delete-stmt)
+result_proxy.rowcount                           #3
+
+### Deleteing specific rows
+stmt = delete(employees).where( employees.columns.id ==1 )
+result_proxy = connecion.execute(stmt)
+result_proxy.rowcount           #1
+
+### Deleting a table  (drop)   , but doesn't delete it from metadata until python process is restarted
+extra_employees.drop(engine)         # takes engine argument to specify which database
+print(extra_employees.exists(engine))             #False
+
+# Drop all tables
+metadata.drop_all(engine)
+engine.tables_names()             # []
+
+
+#### Example:  Build a statement to count records using the sex column for Men ('M') age 36: stmt
+stmt = select([func.count(census.columns.sex)]).where(
+    and_(census.columns.sex == 'M',
+         census.columns.age == 36)
+)
+# Execute the select statement and use the scalar() fetch method to save the record count
+to_delete = connection.execute(stmt).scalar()
+
+stmt_del = delete(census)              # Build a statement to delete records from the census table: stmt_del
+stmt_del = stmt_del.where(             # Append a where clause to target Men ('M') age 36
+    and_(census.columns.sex == 'M' ,
+         census.columns.age == 36 )
+    )
+results = connection.execute(stmt_del)         # Execute the statement: results
+print(results.rowcount, to_delete)             # Print affected rowcount and to_delete record count, make sure they match
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
