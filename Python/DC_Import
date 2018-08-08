@@ -747,6 +747,52 @@ while more_results:
 results_proxy.close()
 
 
+########## Creating Databases
+## Databases like PostgreLQL and MySQL must be initialized by their own command line tools
+With SQLite, create_engine() steatment will create the database and file if the ydo not already exist
+
+from sqlalchemy import (Table, Column, String, Integer, Float , Boolean)     # Table, Column objects, and data types
+employees = Table('employees', metadata,                                       # can also include defaults or constraints
+                  Column('id', Integer()),
+                  Column('name', String(255) , unique=True , nullable=False),    # must be unique, and cannot be empty
+                  Column('salary', Decimal(), default = 100. ),
+                  Column('present', Boolean(), default = True )
+             )
+metadata.create_all(engine)
+engine.table_names()        # [u'employees']
+engine.constraints          # will print out code from above showing constraints
+print(repr(data))          # print table details
+
+print(repr(metadata.tables['data']))     # print the table details
+
+### so, similar to reflection, we use Table object, but replace autoload keword with column objects
+### for updating , will need to use SQL ALTER statemetns , or use too like Alembic
+
+### Inserting data into table
+from sqlalchemy import insert
+stmt = insert(employees).values(id=1,name='Jason',salary=1.00,active=True)
+result_proxy = connection.execute(stmt)
+print(result_proxy.rowcount)                  # 1
+
+### Multiple row insert:  Build list of dictionaries , pass bot hstmt and value list to execute method.
+stmt = insert(employees)
+values_list = [
+        {'id':2 , 'name' : 'Rebecca' , 'salary' : 2.00 , 'active' : True } ,
+        {'id':3 , 'name' : 'Bob' , 'salary' : 3.00 , 'active' : False } ,
+    ]
+result_proxy = connection.execute(stmt, values_list)
+print(result_proxy.rowcount)              # 2
+
+stmt = insert(data).values(name='Anna', count=1, amount=1000.00, valid=True)
+results = connection.execute(stmt)
+stmt = select([data]).where(data.columns.name == 'Anna')       # Build a select statement to validate the insert
+print(connection.execute(stmt).first())                        # Print the result of executing the query.
+
+
+
+
+
+
 
 
 
