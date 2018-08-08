@@ -1,0 +1,79 @@
+# Common Problems
+#   Inconsistent column names ; missing data ; outliers ; duplicate rows ; untidy ; 
+#   need to process columns ; colum types signal unexpected values
+
+import pandas as pd
+df = pd.read_csv('filename.csv')
+df.head()  # methods
+df.tail()  
+df.info()
+df.columns # attributes
+df.shape 
+
+df.continent.value_counts(dropna=False)         # same as df['continent'].value_counts(dropna=False)
+df.country.value_counts(dropna=False).head()    # returns sorted list ...good for identifing duplicates
+df.fertility.value_counts(dropna=False).head()  # can see missing as a value for 5 obs. .. mixed type
+df.population.value_counts(dropna=False).head() # can see NaN occurs 42 times
+
+df.describe()        # summary stats, 8 values (count, mean, std, 5-num summary)
+print(df['Site Fill'].value_counts(dropna=False))
+print(df['Site Fill'].describe())
+
+
+# histograms
+import matplotlib.pyplot as plt
+df.population.plot('hist')
+plt.show()
+df[df.population > 1000000000]  (show all countries with pop greater than billion people 
+df.boxplot(column='population', by'continent')
+
+univ-cont:  boxplot-violin-plot, density-histogram
+uni-cat:   barchart
+bi-cont-cont:  scatter
+bi-cont-cat:  boxplot, by
+bi-cat-cat:  
+
+
+# Import matplotlib.pyplot
+import matplotlib.pyplot as plt
+
+# Plot the histogram
+df['Existing Zoning Sqft'].plot(kind='hist', rot=70, logx=True, logy=True)
+df.boxplot(column='initial_cost', by='Borough', rot=90)
+# Display the histogram
+plt.show()
+
+
+df.plot(kind='scatter', x='initial_cost', y='total_est_fee', rot=70)
+
+
+
+########## Tidy Data
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
