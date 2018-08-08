@@ -908,17 +908,97 @@ print(results.rowcount, to_delete)             # Print affected rowcount and to_
 
 
 
+########## Case Study
+from sqlalchemy import create_engine, MetaData
+engine = create_engine('sqlite:///chapter5.sqlite')
+metadata = MetaData()
+
+from sqlalchemy import(Table , Column, String, Integer, Decimal, Boolean)
+employees = Table('employees', metadata,
+        Column('id', Integer()),
+        Column('name', String(255)),
+        Column('salary', Decimal()) ,
+        Column('active', Boolean()))
+        )
+metadata.create_all(engine)
+
+from sqlalchemy import(Table , Column, String, Integer)
+
+
+census = Table('census', metadata,
+               Column('state', String(30)),
+               Column('sex', String(1)),
+               Column('age', Integer()),
+               Column('pop2000',Integer()),
+               Column('pop2008',Integer()))
+metadata.create_all(engine)
+
+
+values_list = []
+for row in csv_reader:
+    data = {'state': row[0]
+            'sex': row[1]
+            'age': row[2]
+            'pop2000': row[3]
+            'pop2008': row[4]
+            }
+    values_list.append(data)
+    
+from sqlalchemy import insert
+stmt = insert(census)
+result_proxy = connection.execute(stmt, values_list)
+print(result_proxy.rowcount)
+
+#### Determine average age for males and females
+from sqlalchemy import select
+stmt = select( [census.columns.sex, (func.sum(census.columns.pop2008 * census.columns.age) 
+                                         / func.sum(census.columns.pop2008) 
+                                    ).label('average_age')
+              ])
+stmt = stmt.group_by(census.columns.sex)
+results = connection.execute(stmt).fetchall()
+
+for key in results:                                         # Print the average age by sex
+    print('{}:{}'.format(key.sex , key.average_age))
+
+for result in results:
+    print(result.sex , result.average_age)
+
+
+### Calcuate percentages
+from sqlalchemy import case , cast, Float
+stmt  = select([
+    (func.sum(
+            case([
+                (census.columns.state == 'F',
+                 census.columns.pop2000)
+            ], else_=0 )) /
+     cast(func.sum(census.columns.pop2000), Float) * 100 ).label('percent_female')
+     ])
 
 
 
+### Difference
+stmt = select([census.columns.age, (census.columns.pop2008-census.columns.pop2000).label('pop_change') ])
+stmt = stmt.order_by('pop_change')
+stmt = stmt.limit(5)
 
 
 
-
-
-
-
-
+# import case, cast and Float from sqlalchemy
+from sqlalchemy import case , cast, Float
+stmt = select([census.columns.state,
+    (func.sum(
+        case([
+            (census.columns.sex == 'F',
+                 census.columns.pop2000)
+            ], else_=0 )) /
+     cast(func.sum(census.columns.pop2000), Float) * 100 ).label('percent_female')
+])
+stmt = stmt.group_by(census.columns.state)
+results = connection.execute(stmt).fetchall()
+for result in results:
+    print(result.state, result.percent_female)
 
 
 
