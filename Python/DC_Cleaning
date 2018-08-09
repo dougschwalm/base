@@ -251,6 +251,50 @@ assert g1800s.columns[0] == 'Life expectancy'               # Check whether the 
 assert g1800s.iloc[:, 1:].apply(check_null_or_valid, axis=1).all().all()      # Check whether the values in the row are valid
 assert g1800s['Life expectancy'].value_counts()[0] == 1       # Check that there is only one instance of each country
 
+gapminder = pd.concat([g1800s,g1900s,g2000s])
+print(gapminder.shape)        # 780 x 218
+gapminder_melt = pd.melt(frame=gapminder,id_vars='Life expectancy')
+gapminder_melt.columns = ['country','year','life_expectancy']
+
+gapminder.year = pd.to_numeric(gapminder.year, errors='coerce')
+assert gapminder.country.dtypes == np.object
+assert gapminder.year.dtypes == np.int64
+assert gapminder.life_expectancy.dtypes == np.float64
+
+
+
+
+countries = gapminder.country                   # Create the series of countries: countries
+countries = countries.drop_duplicates()         # Drop all the duplicates from countries
+pattern = '^[A-Za-z\.\s]*$'                     # Write the regular expression: pattern
+mask = countries.str.contains(pattern)          # Create the Boolean vector: mask
+mask_inverse = ~mask                            # Invert the mask: mask_inverse
+invalid_countries = countries.loc[mask_inverse] # Subset countries using mask_inverse: invalid_countries
+print(invalid_countries)                        # Print invalid_countries   (have other chars besides listed
+
+assert pd.notnull(gapminder.country).all()
+assert pd.notnull(gapminder.year).all()
+gapminder = gapminder.dropna()                  # drops all rows with any NaN ... since we checked 2 of 3, only 3rd life expe
+
+plt.subplot(2, 1, 1)                                       # Add first subplot
+gapminder.life_expectancy.plot(kind='hist')                    # Create a histogram of life_expectancy
+gapminder_agg = gapminder.groupby('year')['life_expectancy'].mean()    # Group gapminder: gapminder_agg
+print(gapminder_agg.head())                             # Print the head of gapminder_agg
+print(gapminder_agg.tail())                             # Print the tail of gapminder_agg
+plt.subplot(2, 1, 2)                                    # Add second subplot
+gapminder_agg.plot()                                   # Create a line plot of life expectancy per year
+plt.title('Life expectancy over the years')             # Add title and specify axis labels
+plt.ylabel('Life expectancy')
+plt.xlabel('Year')
+plt.tight_layout()                                       # Display the plots
+plt.show()
+gapminder.to_csv('gapminder.csv')                        # Save both DataFrames to csv files
+gapminder_agg.to_csv('gapminder_agg.csv')
+
+
+
+
+
 
 
 
