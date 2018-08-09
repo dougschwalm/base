@@ -109,6 +109,110 @@ pd.merge(left=state_populations, right=state_codes,
 m2o = pd.merge(left=site, right=visited,
           on=None, left_on='name' , right_on='site')
 
+##### Converting Data Types (recasting)
+df['var'] = df['var'].astype(str)                   # can recast variable itself to a string
+df['sex'] = df['sex'].astype('category')            # can be cast as a factor like category  (saves memory if levels<c
+df['nums'] = pd.to_numeric(df['nums'], errors='coerce')    # forces conversion, creates NaN for inconvertable
+
+##### String Manipulation   (re package)             
+https://docs.python.org/2/howto/regex.html
+https://docs.python.org/2/library/re.html#re-syntax
+17          $17           $17.00          $17.89      $17.895   
+12345678901 $123455678901 
+\d*         \$\d*         \$\d*\.\d{2}  \$\d*\.\d{2}  ^\$\d*\.\d{2}$
+Good practice ... compile pattern to variable first, then match the variable.
+
+import re
+pattern = re.compile('\$\d*\.\d{2}')
+result = pattern.match('$17.89')
+bool(result)                                 #True
+
+# returing list of matches 
+matches = re.findall('pattern', 'string')
+matches = re.findall('\d+', 'the recipe calls for 10 strawberries and 1 banana')      # ['10','1']
+
+pattern1 = bool(re.match(pattern='\d{3}-\d{3}-\d{4}', string='123-456-7890'))
+pattern2 = bool(re.match(pattern='\$\d{3}\.\d{2}', string='$123.45'))
+pattern3 = bool(re.match(pattern='[A-Z]\w*', string='Australia'))
+
+df.apply(np.mean, axis=0)       # will find means of columns
+df.apply(np.mean, axis=1)       # will find means of rows
+
+
+import re
+from numpy import NaN
+pattern = re.compile('^\$\d*\.\d{2}$')    # regular expression for monitary values
+diff_money.py
+--------
+def diff_money(row,pattern):
+    icost = row['Initial cost']
+    tef   = row['Total Est. Fee']
+    if bool(pattern.match(icost)) and bool(pattern.match(tef)):
+    
+        icost = icost.replace('$','')
+        tef   = tef.replace('$','')
+        
+        icost = float(icost)
+        tef = float(tef)
+        return icost - tef
+    else:
+        return NaN
+----
+df_subset['diff'] = df_subset.apply(diff_money, axis=1, pattern-pattern)
+
+
+def recode_sex(sex_value):
+    if sex_value == 'Male':                                 # Return 1 if sex_value is 'Male'
+        return 1
+    elif sex_value == 'Female':                                # Return 0 if sex_value is 'Female'    
+        return 0
+    else:
+        return np.nan                                         # Return np.nan    
+
+tips['sex_recode'] = tips.sex.apply(recode_sex)               # Apply the function to the sex column
+
+### lambda functions
+def my_square(x)                                  df.apply(lambda x: x**2)
+  return x**2
+  
+df.apply(mysquare)
+
+
+tips['totdollar_replace'] = tips.totdollar.apply(lambda x: x.replace('$', ''))             # replaces $ with ''
+tips['totdollar_re']      = tips.totdollar.apply(lambda x: re.findall('\d+\.\d+', x)[0])   # extracts the number without $
+print(tips.head())       #   $16.99    16.99       16.99
+
+
+##### Duplicate Data         
+df..drop_duplicates()       # drops any duplicated lines
+
+
+###### missing data
+## dropping missing values
+tips_dropped = tips_nan.dropna()
+
+## filling in missing values
+tips_nan['sex'] = tips_nan['sex'].fillna('missing')                            # replaces missing with text-string
+tips_nan[['total_bill','size']] = tips_nan[['total_bill','size']].fillna(0)    # replaces missing with 0
+mean_value = tips_nan.tip.mean()
+tips_nan['tip'] = tips_nan['tip'].fillna(mean_value)
+
+
+
+
+
+### Metacharacters . & $ * + ? { } [ ] \ | ( )
+[] Character Classes .. set of characters on which to match .. note a,b,c == a-c  (metacharacters not active inside classes)
+[^x] is the complement set (any character except x)
+\  Escape character ... \[ will match [  ..\\ will match a \
+\d ==  [0-9]    \D == [^0-9]    \s == [ \t\n\r\f\v]   \S == [^ \t\n\r\f\v]  \w == [a-zA-Z9-0_]    \W == [^a-zA-Z9-0_]
+[\s,.]    will match any whitespace, . and , ... so sequence symbols allowed in CharClasses
+.              == [^\n]   ie anything except newline character
+re.DOTALL      matches anything , including newline
+
+
+
+
 
 
 
