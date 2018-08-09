@@ -1,3 +1,7 @@
+dm73sr02.tfwv: INFO:nb_conda.envmanager:command: conda info --json
+INFO:nb_conda.envmanager:command: conda list --no-pip --json -n root
+
+
 conda help  | -h
 conda activate           # used to switch to an environment
 conda clean
