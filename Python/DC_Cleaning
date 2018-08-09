@@ -197,6 +197,64 @@ tips_nan[['total_bill','size']] = tips_nan[['total_bill','size']].fillna(0)    #
 mean_value = tips_nan.tip.mean()
 tips_nan['tip'] = tips_nan['tip'].fillna(mean_value)
 
+##### Assert satemenst / testing with asserts   (if asserts to true, nothing happens , otherwise stops with error
+assert google.Close.notnull().all()              # if there are missing values, will give error
+google_0 = google.fillna(value=0)
+assert google_0.Close.notnull().all()         # doesn't give error
+
+pd.notnull(df)   is synonym to   df.notnull()
+
+assert ebola.notnull().all().all()
+assert (ebola >=0).all().all()
+
+
+########## Putting it all together
+import pandas as pd
+df = pd.read_csv('mydata.csv')
+df.head()
+df.info()
+df.columns
+df.describe()
+df.column.value_counts()
+df.column.plot('hist')
+
+def cleaning_function(row_data):
+  # cleaning steps
+  return
+df.apply(cleaning_function        )  # colwise
+df.apply(cleaning_function, axis=1)  # rowwise
+assert (df.column_data > 0).all()    
+
+
+import matplotlib.pyplot as plt
+g1800s.plot(kind='scatter', x='1800', y='1899')
+plt.xlabel('Life Expectancy by Country in 1800')
+plt.ylabel('Life Expectancy by Country in 1899')
+plt.xlim(20, 55)
+plt.ylim(20, 55)
+plt.show()
+
+
+
+def check_null_or_valid(row_data):
+    """Function that takes a row of data,
+    drops all missing values,
+    and checks if all remaining values are greater than or equal to 0
+    """
+    no_na = row_data.dropna()[1:-1]
+    numeric = pd.to_numeric(no_na)
+    ge0 = numeric >= 0
+    return ge0
+
+
+assert g1800s.columns[0] == 'Life expectancy'               # Check whether the first column is 'Life expectancy'
+assert g1800s.iloc[:, 1:].apply(check_null_or_valid, axis=1).all().all()      # Check whether the values in the row are valid
+assert g1800s['Life expectancy'].value_counts()[0] == 1       # Check that there is only one instance of each country
+
+
+
+
+
 
 
 
