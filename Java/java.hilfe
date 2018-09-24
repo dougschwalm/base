@@ -13,9 +13,20 @@ public class ClassName {
    private int  field1
    private long field2
    private char field3
-   // Place your getX 
-   
-   // place your setX 
+   // Place your getX Accessors (getters)here
+   public int getField1() {                                         // Note CamelCase naming for the getter and setter
+      return field1 ;
+   }
+   public long getField2() {
+      return field2 ;
+   }
+   public char getField3() {
+      return field3 ;
+   }
+   // place your setX Mutators (setters) here
+   public void setField1(int field1) {                              // void since doesnt
+      this.field1 = field1 ;                                        // make sure to use this. do reduce ambiguity
+   }                                                                // to use: > objectName.setField1( val ) 
 
 
    // Style:  set a null Constructor instead of relying on Java (Java won't do it if there are multiple constructores)
@@ -36,6 +47,28 @@ public class ClassName {
 
    // not all constructors need to be public, if doing an internal determined , use private
    private ClassName() {
+   }
+   
+   
+ // ******** Methods *********
+    // return-type  methodName (typed-parameter list)   ... methodName should be verb-based
+    // return-type can be void, primative, or reference to object/array (eg, classname, etc)
+    void printSum( float x , float y , int n ) {
+    if (n<1)
+      return ;                                                             // return can stop method (implicit at end) ;
+    float sum = x+y ;
+    for (int i =0 ; i < n ; i++)
+       System.out.println(sum)  ;                                          // ClassName n = new Classname ;
+    }                                                                      // m.printSum(8.1 , 9) ;
+    public boolean methodName(int arg) {
+      int cvar = ovars + ovars2 ;
+      return (argument) ;
+    }                                                                      // will return a true or false
+    
+    
+   
+   
+   
    
    } // End of Class definition
 
