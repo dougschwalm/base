@@ -29,7 +29,7 @@ new char[] {"mom", "tommy", "george"} ;
 
 public class ClassName {
    // place fields here
-   private int  field1 ;
+   private int  field1 ;                // note, can give dangerous behvior when overridden by inherited class
    private long field2 ;
    private char field3 ;
    private boolean[] isTrue ;                                      // Boolean array will have False as default 
@@ -104,6 +104,29 @@ public class ClassName {
    
    } // End of Class definition
 
+// Class Inheritance  of Derived Classes
+// Note, any field added here with same name of base class hides base-class field
+
+public class EclassName extends ClassName {
+
+@Override   // compile time only flag to check intent to override method from base class
+
+}
+
+// prevents Inheritence ... sue final
+final public class ClassName { ...}
+// or , prevent a method ina  class :
+public final void mehtodName() {.. }
+
+// require inheritance ... use abstract   (must mark both class and method )
+public abstract class ClassName { }
+// and, for a method
+public abstract type methodName(Type vsr) ;  // thus, now has 
+
+// Note, constructors are not inherited , unless they use super, and are defined in first line of constructor
+public ClassName(int var)  {
+  super(var)
+}
 
 
 
@@ -123,3 +146,42 @@ ClassName objectName = new ClassName() ;
 
 
 }
+
+
+
+
+
+// //////////////////////////////////// Notes on the Object Class  (root of all classes)
+// Every class inherits directly or indirectly from the Object class.
+public class ClassName extends Object { ... }     // never need to write, but this is what any class does
+
+// so, you can create an Object class any other class:  .. it will actually create the instance.
+Object o = new ClassName() ;              // won't be able to reference specialized methods in ClassName
+ClassName no = (ClassName) o ;            // will open access to the created object
+
+// Methods of object class
+o.clone        // creates duplciate of itslef
+o.hashCode     // get a hash code for the current instance
+o.getClass     // return type informatio nfor current instance
+o.finalize     // handle speical resource cleanup scenarios
+o.toString     // return string of characters representing the current instance
+o.equals       // compare another object to the current instance for equality
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
