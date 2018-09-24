@@ -1,5 +1,24 @@
 
 
+package com.statefarm.sr.eda ;
+
+public class Main {
+
+   public static void main(String[] args) {
+      stuff
+   }
+}
+
+// create an array 
+new ClassName[] {element1 , element} ;
+new float[] {2.2 , 3.3, 4.4} ;
+new char[] {"mom", "tommy", "george"} ;
+
+
+
+
+
+
 
 
 
@@ -10,24 +29,30 @@
 
 public class ClassName {
    // place fields here
-   private int  field1
-   private long field2
-   private char field3
+   private int  field1 ;
+   private long field2 ;
+   private char field3 ;
+   private boolean[] isTrue ;                                      // Boolean array will have False as default 
    // Place your getX Accessors (getters)here
-   public int getField1() {                                         // Note CamelCase naming for the getter and setter
-      return field1 ;
-   }
-   public long getField2() {
-      return field2 ;
-   }
-   public char getField3() {
-      return field3 ;
-   }
+   public int  getField1() { return field1 ; }                     // Note CamelCase naming for the getter and setter
+   public long getField2() { return field2 ; }
+   public char getField3() { return field3 ; }
    // place your setX Mutators (setters) here
-   public void setField1(int field1) {                              // void since doesnt
-      this.field1 = field1 ;                                        // make sure to use this. do reduce ambiguity
-   }                                                                // to use: > objectName.setField1( val ) 
+   public void setField1(int  field1) { this.field1=field1 ; }       // void since doesnt
+   public void setField2(long field1) { this.field1=field1 ; }       // make sure to use this. do reduce ambiguity
+   public void setField3(char field1) { this.field1=field1 ; }       // to use: > objectName.setField1( val ) 
 
+   // Place any Initialization Blocks here to share across all constructors ... overrides need to chain
+   {
+      isTrue = new boolean[field1] ;            // if field1 is some sort of value to determine size of boolean array
+      for (int i=0 ; i< field1 ; i++)
+         isTrue[i] = true ;
+   }
+
+   // Recall Overloading... Constructors and Methods identified by signature={# Parameters, Type of parameters, Name(for methods)}
+   // Make list of all overloaded methods and classes for better documentation
+   // Remember that overloading will work if unspecified type can be expanded/widened into a specified type
+   // http://bit.ly/javamethodselection
 
    // Style:  set a null Constructor instead of relying on Java (Java won't do it if there are multiple constructores)
    // A public constructor will allow the creation of an instance of the class (otherwise a class is just declared)
@@ -53,13 +78,20 @@ public class ClassName {
  // ******** Methods *********
     // return-type  methodName (typed-parameter list)   ... methodName should be verb-based
     // return-type can be void, primative, or reference to object/array (eg, classname, etc)
-    void printSum( float x , float y , int n ) {
+    public void printSum( float x , float y , int n ) {
     if (n<1)
       return ;                                                             // return can stop method (implicit at end) ;
     float sum = x+y ;
     for (int i =0 ; i < n ; i++)
        System.out.println(sum)  ;                                          // ClassName n = new Classname ;
     }                                                                      // m.printSum(8.1 , 9) ;
+    // Overloaded version that accepts variable number of params
+    public void printSum( float... list ) {                               // variable parameter must be last
+       for (int i = 0 ; i < list.length, i++ ) {
+          float runsum += i ;
+       }
+       System.out.prinln(runsum) ;
+    }
     public boolean methodName(int arg) {
       int cvar = ovars + ovars2 ;
       return (argument) ;
