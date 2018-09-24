@@ -1,0 +1,60 @@
+
+
+
+
+
+// Make sure to encapsulate your class by using Accessors and Mutators, and setting fields to private
+// Access Modifiers:  none      only within its own package (package private)       Classes    Members 
+//                    public    can be used anywhere                                Classes    Members
+//                    private   Only within its own class                           no         Members
+
+public class ClassName {
+   // place fields here
+   private int  field1
+   private long field2
+   private char field3
+   // Place your getX 
+   
+   // place your setX 
+
+
+   // Style:  set a null Constructor instead of relying on Java (Java won't do it if there are multiple constructores)
+   // A public constructor will allow the creation of an instance of the class (otherwise a class is just declared)
+   public ClassName() {
+   }
+   
+   // second constructor for more functionality.  Remember to use this. for clarification of native fields
+   public ClassName(int arg1) {
+   this.arg1 = passedval ;
+   }
+
+   // third constructor for further functionality
+   public ClassName(int arg1, int arg2) {
+   this(arg1) ;    // calls the previous constructor so that no need to duplicate (needs to be 1st line)
+   this.arg12 = passdval2 ;
+   }
+
+   // not all constructors need to be public, if doing an internal determined , use private
+   private ClassName() {
+   
+   } // End of Class definition
+
+
+
+
+
+// ********* Using Classes 
+// Remember a Class is a Reference Type .. so it only points to an object in memory, and dones not pass a copy, just a pointer
+ClassName objectName ;
+objectName = new ClassName() ;
+// or , on one line:
+ClassName objectName = new ClassName() ; 
+
+
+
+
+
+
+
+
+}
