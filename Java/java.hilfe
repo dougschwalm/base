@@ -169,12 +169,86 @@ o.equals       // compare another object to the current instance for equality
 
 
 
+// //////////////////////////////////// Inheritance
+use extend keyword
+Can override base class methods .. Oject.equals to provide new behaviror 
+constructors are not inherited .. but can call into base class constructors with super
+extend      keyword to use in class def to create an inherited class
+@Override   use to verify base class existance
+super       access base class behavior rather than over-ridden behavior
+final       do not allow override 
+abstract    require override
+
+
+// //////////////////////////////////// String Class
+extends chars to sequence of chars ... immutable object (any change makes new memory allocation)
+String myName = "Doug" ;
+String lastName = "Schwalm" ;
+system.out.println("Full name is " + myName + " " + lastname) ;
+strName.length          // gives us number of characters in string
+strName.valueOf         // converts nonstring to string        (java will often do this implicitly for base types)
+strName.concat          // same as pupper
+strName.replace         // creates new string
+strName.toLowerCase     // creates new string
+strName.toUpperCase     // creates new string
+strName.trim            // creates new string
+strName.split           // gives array of strings
+strName.format          // allows formatting
+strName.charAt          //
+strName.substring       // extracts a substring
+strName.contains        // checks for existance of a substring
+strName.endsWith        //
+strName.startsWith      //
+strName.indexOf         //
+strName.lastIndexOf     //
+strName.compareTo       // check to see if <=> based on unicode
+strName.compareToIgnoreCase //
+strName.isEmpty         // zero length string
+strName.equals          // exact comparison, char by char (remember == requires both instances to be in same memory)
+strName.equalsIgnoreCase  //          if s1.equals(s2))   .. but not this is "expensive" compared to ==.
+// http://bit.ly/javastringclass
+// Dealing with String equality
+String s3 = s1.intern()    // returns a canonnicalized value....returns separate reference ... use for large searches.
+String s4 = s2.intern()    //    this iwll point to same object as referenced in s3.   so s3==s4 is True
+
+toString  method in Objectclass often needs to be overridden
+
+@Override
+public String toString() {
+   if (var1 >0)
+      return "Output #" + var1 ;
+   else
+      return "this Class" + othervar ;
+ }
+ 
+ 
+ StringBuilder       // provides mutable string buffer     (best performance if you presize the buffer
+ StringBuilder Sb = new StringBuilder(40) ;      // will grow automatically if to large, but needs overhead
+ .append
+ .insert
+ 
+ Flight myFlight = new Flight(175) ;
+ String location = "Florida" ;
+ int time = 9 ;
+ sp.append("I flew to ") ;
+ sb.append(location) ;
+ sb.append(" on ") ;
+ sb.append(myFlight) ;              // I flew to Florida on Flight #175
+ int pos = sb.length()  - " on ".length - myFlight.toString().length() ;   // tells current used length of the allocation
+                                                                         // note, can put .length on a literal
+ sb.insert(pos, "at ") ;
+ sb.insert(pos+4, time) ;         // I flew to Florida at 9 on Flight #175
+String message = sb.toString() ;      // puts it in a string
 
 
 
-
-
-
+// ////////////////////////////// Primitive Wrapper Classes      (tradeoff memory for convenience
+* adds overhead to a primitive
+* allows extra functionality
+* all wrapper classes are immutable, just like strings
+* Conversions bewteen primitive and wrapper class often handled automatically.
+Integer a = 100 ; // value 100 put into wrapper a
+int b = a ;       // value taken out of A and put into primitive b
 
 
 
