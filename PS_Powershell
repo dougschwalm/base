@@ -1,0 +1,35 @@
+Note:  Powershell is [management engine] built on the [.NET framework] and hosted on an [application], all of which can vary
+
+to start traditional console:  win-r, powershell  
+ ... or window-icon, search, powershell   , (right click for admin)
+    ... right click to pin to bar  or run as admin  (same with ise
+ 
+ to start the GUI Powershell ISE,  (integrated shell environment)
+    within powershell, type:   >ise
+    ctrl-+ will zoom view
+    tools-options ... can change autosave time, etc
+    can open different powershell tabs (under file)
+ 
+ to configure preferences:   click on upper-left powershell-icon in window, choose preferences
+     can set font, size, buffer, colors, copy-paste action, etc
+     
+ note:  ISE may differ from traditional console, like :   nslookup  std/sto
+ 
+ 
+ to check version:  > $psversiontable
+ 
+ get-service    tells all services on computer
+ 
+to update the helpfiles:   > update-help   <-force>      // if done more than once a day, use force
+to use help:    > help command -full    [-examples  |  -parameter param ]  [-online]  [-showwindow  (has properties in upperleft] 
+  can use wildcards:   > help *service
+  put cursor in command in the ISE, and hit F1 for the showwindow  (in settings ,can get online help instead of local)
+  
+  help about*     // gives you more information about topics
+  
+
+get-alias -Definition Select-string    (sls)   findall / grep
+  
+  show-command         // makes dialog box that will generate the syntax
+  
+  
