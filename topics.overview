@@ -1,0 +1,49 @@
+
+## Languages
+Python
+Scala   // runs on JVM, cluster computing 
+Julia   // just in time compieled language
+Java
+C
+C++
+Go      // used in docker
+F#
+-Perl
+-Ruby
+-Javascript
+
+## Scripting
+Powershell
+
+## Hadoop (Big data on disk
+Core:  {Common, HDFS, YARN, MapReduce}
+Pig
+Hive       // SQLish
+HBase      //  structured data
+Ambari     // web iterface for provisioning managing and monitorying Hadoop services
+Cassandra  //scalable multi-amster database system
+Chukwa     // data colleciton system for monitoring large distributed systems
+Oozie      //  job scheduler for Haddop
+Sqoop      // connection and transfer mechanism to move data between Hadoop and relational databases
+Zookeeper  // high-eperformance coordination service for distributed applications
+
+## Spark  (Big data In-Memory)
+
+
+
+Docker
+
+
+## Analysis / Datavisualization
+SQL
+R
+SAS
+Matlab
+Stata
+Anaconda
+
+## AI / ML
+TensorFlow
+
+
+## Unstructured DAta
