@@ -15,6 +15,11 @@ F#
 ## Scripting
 Powershell
 
+## Project Management
+Git
+GitHub
+GitLab
+
 ## Hadoop (Big data on disk
 Core:  {Common, HDFS, YARN, MapReduce}
 Pig
@@ -30,7 +35,7 @@ Zookeeper  // high-eperformance coordination service for distributed application
 ## Spark  (Big data In-Memory)
 
 
-
+## Containers and Virtualization
 Docker
 
 
