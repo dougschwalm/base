@@ -1,0 +1,45 @@
+
+
+Relational Operators:
+(can be applied to scalars and vectors, lists, and matricies as well)
+TRUE == TRUE         will yield TRUE
+TRUE != FALSE        will yield TRUE
+"H"  >= "G"          will yield TRUE
+TRUE <= FALSE        will yield FALSE
+
+AND &           (note, &&, || and  only compares 1st element in structures)
+OR  |
+NOT !  !TRUE    will yield FALSE
+
+
+
+is.numeric(5)
+
+
+# will exit If structure as soon as something is true
+if(condition){
+  expr
+} else if {
+  exp2
+} else  {
+  exp3
+}
+
+# can be stopped with a break statement
+while(ctr <= 10) {
+   expr
+   ctr <- ctr+1
+}
+
+#seq can be vector , list  (matricies , dataframes)
+# break    also works ending for loop ,  
+# next     will skip following commands, but continue for loop
+for(var in seq) {
+  exp
+}
+
+# to loop over the index in a list/vector:
+for (i in 1:length(cities)) {        # 1:6==c(1,2,3,4,5,6)
+   print(cities[i])
+}
+
