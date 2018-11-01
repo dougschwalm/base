@@ -1,4 +1,16 @@
 
+help(fun)   ==  ?fun              # gets help on the function
+args(fun)                         # shows you what arguments are available
+
+
+
+install.packages("foreign", dependencies=TRUE)
+library(foreign)
+require(foreign)
+
+ggvis # graphical visualization
+search()  # check which packages have been attacheed (loaded via library)
+
 
 Relational Operators:
 (can be applied to scalars and vectors, lists, and matricies as well)
@@ -42,4 +54,42 @@ for(var in seq) {
 for (i in 1:length(cities)) {        # 1:6==c(1,2,3,4,5,6)
    print(cities[i])
 }
+
+
+# ########## lapply
+
+# will always return a list
+
+# but to get back a vector , just wrap with unlist
+unlist(lapply(cities,nchar))
+
+
+# ########## Functions
+R passes arguments by value (cannot change variable inputted into function
+
+mean(x,na.rm=TRUE, trim=0.1)
+
+newfun <- function(arg1,arg2){
+}
+
+
+
+
+
+
+
+# The vector pioneers has already been created for you
+pioneers <- c("GAUSS:1777", "BAYES:1702", "PASCAL:1623", "PEARSON:1857")
+
+# Split names from birth year
+split_math <- strsplit(pioneers, split = ":")
+
+# Convert to lowercase strings: split_low
+split_low <- lapply(split_math,tolower)
+
+# Take a look at the structure of split_low
+print(str(split_low))
+
+# using anonymous functions in lapply
+names <- lapply(split_low, function(x) {  x[1] } )
 
