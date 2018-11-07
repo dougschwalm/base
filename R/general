@@ -94,9 +94,106 @@ print(str(split_low))
 names <- lapply(split_low, function(x) {  x[1] } )
 
 
+avoids loops
+command                     input   output
+apply(x,margin,fun,...)     arrays  array   margin=1, rows   margin=2, columns   margin=c(1,2) both rows and columns
+lapply(x,fun ...)           lists   lists
+sapply(x,fun,...)           lists   array or lower   ... wrapper for lapply
+vapply
+mapply        multivariate 
+rapply
+tapply
+sweep
+aggregate(x, by, FUN , ... )  (in stats package)  like apply, but can include by clause: aggregate(Mydf$Qty, by=Mydf["DepPC"], FUN=sum)
+rep(x,v)  replicate elements of x by the specified number in vector v
 
-CSRYE Rotary Youth Exchange - Teacher Reference
-CSRYE Rotary Youth Exchange - Country Selection
+# Create standardized variables on matrix of data
+dataset_means <- apply(dataset, 2, mean)
+dataset_sdev <- apply(dataset, 2, sd)
+dataset_std <- sweep(sweep(dataset, 2, dataset_means,"-"), 2, dataset_sdev,"/")
+
+
+
+
+
+
+
+
+Useful functions
+Xapply()
+sort()    sorts vector in ascending order   (, decreasing=TRUE) to reverse
+print()
+cat()
+identical()
+
+
+mean()
+sum()
+round() , ceiling() , floor() , trunc() , signif() ,  currency=round(num,digits=2)
+abs()
+
+list()
+seq()   generates a sequence:  seq(from,to,by)       seq(8,2, by -2)  ->  8,6,4,2
+rep()   replicates input :   rep( c(8,6,4,2) , times=2 ) -> 8,6,4,2,8,6,4,2
+rep()   replicates input :   rep( c(8,6,4,2) , each=2 ) -> 8,8,6,6,4,4,2,2
+str(li) displays structure of list li
+append()  vector or list
+rev()     reverses list
+
+is.list
+is.
+
+as.list()
+unlist(li)
+
+
+# REGEX     ?regex
+grep()    gerp(pattern=<regex>, x=<string>)    grep(pattern="a", x=listofanimals)   gives list of indicies with TRUE matches
+grepl()   grepl(pattern=<regex>, x=<string>)    grepl(patter="a", x=listofanimals)    gives TRUE FALSE list
+sub()     sub(pattern=<regex>, replacement=<str>, x=<str>)      first match
+gsub()      all matches
+
+
+"^a" beginning with line
+"a$" end of line 
+"a|i"   a or or match
+.*      matches 0 or more times  (useful to any sort of fill between specified anchors
+\\s     matches a space ..
+[0-9]+  matches a number at least once
+\\.     escapes a period
+
+([0-9]+)  parentheses will save the match into \\1 , available in sub() commands
+
+
+# save hits that have proper @blah.edu addresses
+hits <- grep("@.*\\.edu$",emails)
+# Subset emails using hits
+emails[hits]
+
+
+
+## Times and Dates       unclass(as.Date("1970-01-01"))   = 0
+today <- Sys.Date()       class(today) "Date"   
+now   <- Sys.time()       class(now)  "POSIXct" "POSIXt"
+my_date <-as.Date("1971-05-14")   class(my_date) "Date"      %Y-%m-%d"  default
+us_date <- as.Date("1971-14-05", format="%Y-%d-%m")
+eu_str <- format(us_date, "%d-%b-%Y")     converts date to string
+my_time <- as.POSIXct("1971-05-14 11:25:15")
+my_time <- as.POSIXct("1971-05-14 11:25:15", format="")
+%Y  %y  %m %d  %A     %a  %B    %b    %H  %I  %p    %M  %S   %D        %F        %T         strptime
+1971 71 08 27 Friday Fri August Aug   23  11  AM/PM 55  55   %m/%d/%y  %Y-%m-%d  %H:%M:%S
+
+my_date + 1    # incremetns by one day
+date1-date2    # gives day increments
+time1-time2    # gives second increments 
+# Packages to deal with dates
+lubridate
+zoo
+xts
+
+
+
+
 
 
 
