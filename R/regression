@@ -1,0 +1,27 @@
+
+library(broom)
+
+# check data
+glimpse(dataset)
+str(dataset)
+
+# Look at scatterplot
+data_space <- ggplot(data=dataset , aes(x= x1 , y= y1))  + geom_point()
+# look at boxplot by factor
+ggplot(data=dataset , aes(x= factor(x2) , y = y1 ))  + geom_boxplot()
+
+# Terminology ... parallel slope model (one factor , one continues rhsv)
+mod <- lm( y1 ~ x1 + factor(x2), data=dataset) 
+augment(mod)  # augments data with predicted values, etc:    factor.x2.  .fitted .se.fit .resid .hat     # library(broom)
+
+# plot the model
+data_space + geom_line(data=augment(mod) , aes(y = .fitted , color= factor.year.))
+
+# alternative combined plot , order of color specification different
+data_space <- ggplot(data=dataset , aes(x= x1 , y= y1 , color=x2 ))  + geom_point()
+data_space + geom_line(data=augment(mod) , aes(y = .fitted )
+
+
+
+
+
