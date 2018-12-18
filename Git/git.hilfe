@@ -40,8 +40,8 @@ git config --list --local          #
 git config --list --global         #  user.name  and user.email 
 git config --list --system         #
 
-git config --global user.name tfwv
-git config --global user.email douglas.schwalm.tfwv@statefarm.com
+git config --global user.name dschwalm
+git config --global user.email dschwalm@hotmail.com
 
 # Branching
 git branch                      # shows all the branches in the project
@@ -149,7 +149,7 @@ git reset --keep <commit># Reset your HEAD pointer to a previous commit and pres
 ########## SSH Keys ##########
 In general, you may need an ssh key on each server you work on.
 These are found in the ~/.ssh/  directory
-The "public key" will be in id_rsa.pub ... typically it starts with ssh-rsa, and ends with a nickname, like TFWVdm73
+The "public key" will be in id_rsa.pub ... typically it starts with ssh-rsa, and ends with a nickname, like DSCHserv
 *Simply copy the contents of the file (the key), and paste it into the 'Add Key" section in GitLab->UserSettings->SSH Keys
 *then, on the server, add the sfgitlab.per.statefarm ssh-rsa key to the known_hosts file
 
