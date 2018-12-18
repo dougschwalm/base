@@ -154,9 +154,9 @@ The "public key" will be in id_rsa.pub ... typically it starts with ssh-rsa, and
 *then, on the server, add the sfgitlab.per.statefarm ssh-rsa key to the known_hosts file
 
 ++if it is not there, generate one:
-   >ssh-keygen -t rsa -C "TFWVnc74" -b 4096
+   >ssh-keygen -t rsa -C "USERNAME" -b 4096
 ++ The gitlab key can be obtained by
-   >ssh-keyscan sfgitlab.opr.statefarm.org >> known_hosts
+   >ssh-keyscan server.name.com >> known_hosts
 
 
 
