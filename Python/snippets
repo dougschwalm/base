@@ -126,6 +126,24 @@ plt.show()
 
 
 ################################################################################
+##################################### EDA ######################################
+################################################################################
+
+corr_matrix = alldata.corr()
+corr_matrix["var1"].sort_values(ascending=False)
+
+contvars = ["cvar1", "cvar2"]
+pd.scatter_matrix(housing[attributes], figsize=(12,8)) 
+
+# cycle through all variables in the data frame
+for var in alldata.columns:
+    alldata[var].hist()
+    
+varnames = list(alldata.columns.values)
+varnames2 = list(alldata.columns.values.tolist())
+
+
+################################################################################
 ################################# Report Data  #################################
 ################################################################################
 
@@ -146,7 +164,7 @@ train_set , test_set skl.train_test_split(alldata, test_size=0.2, randomstate=se
 print(len(train_set, "obs in training, + " , len(test_set), " obs in test set")
 
 
-# stratified split
+######  stratified split
 alldata["var_cat"] = pd.cut(alldata["var"],
                     bins=[0., 1.5, 3.0, 4.5, 6. np.inf],
                     labels=[1,2,3,4,5])
