@@ -1,5 +1,41 @@
 
 ################################################################################
+###############################  Install Script ################################
+################################################################################
+
+pip install os
+pip install beautifulsoup4
+pip install requests
+python -m pip install --user numpy scipy matplotlib ipython jupyter pandas sympy nose
+# pip install pandas
+pip install seaborn
+python -m pip install -U matplotlib
+pip install -U scikit-learn
+pip install RISE
+pip install theano
+
+
+#time
+#collections
+#copy
+#pylab
+#xlrd xlutils
+#openpyxl
+#tables
+#datetime
+#mlp_toolkits
+#itertools
+
+
+# IDEs
+# Spyder
+# Thonny
+# JupyterHub
+# PyCharm
+# VisualCode
+# Atom
+
+################################################################################
 ###############################  Infile Imports ################################
 ################################################################################
 
@@ -7,14 +43,25 @@
 from __future__ import division, print_function, unicode_literals
 
 # Common imports
-import numpy as np
 import os
+#import pickle
+#import h5py
+#from sqlalchemy import create_engine 
+
+#import requests 
+#from bs4 import BeautifulSoup
+
+import numpy as np
 import pandas as pd
-#import sklearn.linear_model
-# from sklearn import linear_model
+import scipy as sp
+import seaborn as sns
 import sklearn as skl
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+#import sklearn.linear_model
+#from sklearn import linear_model
+
+#import theano
 
 # Ignore useless warnings (see SciPy issue #5998)
 import warnings
@@ -93,16 +140,111 @@ indata.set_index("uniq_id", inplace=True)            # sets index to a data colu
 indata2.head(3) 
 
 
+inarray = np.recfromcsv(file)
+# more control over missing values
+inarray2 = np.loadtxt('file.csv', delimiter=',', skiprows=1, usecols=[0,2])
+# to better handle missing values or other issues
+inarray3 = np.genfromtxt('titanic.csv', delimiter=',', names=True, dtype=None)  
+
+
+#loading an object that was pickled
+with open('data.pkl', 'rb') as file: 
+       d = pickle.load(file)
+
+mat = sp.io.loadmat('some_project.mat')
+print(mat.keys())    
+
+###### From HTML
+r = requests.get('http://www.example.com/some_html_page') print(r.text)
+html_doc = r.text 
+# Create a BeautifulSoup object from the HTML 
+soup = BeautifulSoup(html_doc)
+# Find all 'a' tags (which define hyperlinks) 
+a_tags = soup.find_all('a') 
+# Print the URLs to the shell 
+for link in a_tags: 
+    print(link.get('href'))
+
+### JSON
+r = requests.get('https://www.example.com/some_endpoint') 
+# Decode the JSON data into a dictionary: 
+json_data = r.json()
+# Print each key-value pair in json_data 
+for k in json_data.keys(): 
+    print(k + ': ', json_data[k])
+
+
+##### Data frames       
+
+#from Dictionary
+d = {'col1': [1, 2], 'col2': [3, 4]}
+df = pd.DataFrame(data=d)
+df = pd.DataFrame(data=d, dtype=np.int8)
+
+#from array
+df2 = pd.DataFrame(np.random.randint(low=0, high=10, size=(5, 5)), columns=['a', 'b', 'c', 'd', 'e'])
+
+
+
+indf = pd.read_csv(file, nrows=5, header=None, sep='\t', comment='#', na_values='Nothing')
+indf = pd.read_csv('https://www.example.com/data.csv', sep=';')
+
+dfexcel = pd.read_excel('file.xlsx', sheet_name='sheet1')       
+
+from sas7bdat import SAS7BDAT
+with SAS7BDAT('some_data.sas7bdat') as file: 
+     df_sas = file.to_data_frame()
+     
+     
+df_stata = pd.read_stata('file.dta')
+
+
+# Create engine 
+engine = create_engine('sqlite:///localdb.sqlite')
+# Execute query and store records in DataFrame 
+df = pd.read_sql_query("select * from table", engine)
+
+
+
+##### HDF5
+data = h5py.File('file.hdf5', 'r')
+# Print the keys of the file 
+for key in data.keys(): 
+    print(key)
+# Now when we know the keys we can get the HDF5 group
+group = data['group_name'] 
+# Going one level deeper, check out keys of group 
+for key in group.keys(): 
+    print(key)
+    
+
+################################################################################
+############################## Manipulate Data  ################################
+################################################################################
+
+
 # removing selected outliers
 remove_indicies = [0,1,6,8,33,34,35]
 keep_indicies = list(set(range(36)) - set(remove_indices)) 
 
 
+#apply
+df['name'].apply(capitalizer)
+
+# Map
+It iterates over each element of a series.
+df[‘column1’].map(lambda x: 10+x), this will add 10 to each element of column1.
+df[‘column2’].map(lambda x: ‘AV’+x), this will concatenate “AV“ at the beginning of each element of column2 (column format is string).
 
 
 sortvar = "sort_variable" 
 alldata= pd.merge(left=indata1 , right=indata2, left_index=True, right_index=True)
 alldata.sort_values(by=sortvar, inplace=True)
+
+
+#lambda
+
+#function
 
 ################################################################################
 ############################### Visualize Data  ################################
@@ -125,9 +267,33 @@ save_fig("attribute_histogram_plots")
 plt.show()
 
 
+Matplotlib supports using TEX in plots. The only steps needed are the first three lines in the code below, which
+configure some settings. the labels use raw mode (r'...') to avoid needing to escape the \ in the TEX string.
+The final plot with TEX in the labels is presented in figure 14.11.
+>>> from matplotlib import rc
+>>> rc('text', usetex=True)
+>>> rc('font', family='serif')
+>>> y = 50⁎exp(.0004 + cumsum(.01⁎randn(100)))
+>>> plot(y)
+>>> xlabel(r'time ($\tau$)')
+>>> ylabel(r'Price',fontsize=16)
+>>> title(r'Geometric Random Walk: $d\ln p_t = \mu dt + \sigma dW_t$',fontsize=16)
+>>> rc('text', usetex=False)
+
+savefig('figure.pdf') # PDF export
+savefig('figure.png') # PNG export
+savefig('figure.svg') # Scalable Vector Graphics export
+savefig('figure.png', dpi = 600) # High resolution PNG export, default dpi is 100.
+
+
 ################################################################################
 ##################################### EDA ######################################
 ################################################################################
+
+sales["Current_Price"].mean()
+df["varname"].median()   .max()  .min()
+
+list vs array vs series vs dataframe
 
 corr_matrix = alldata.corr()
 corr_matrix["var1"].sort_values(ascending=False)
