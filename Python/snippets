@@ -13,7 +13,16 @@ python -m pip install -U matplotlib
 pip install -U scikit-learn
 pip install RISE
 pip install theano
-
+pip install econometrics
+pip install statsmodels
+pip install re
+pip install shutil
+pip install glob
+pip install subprocess
+pip install gzip
+pip install zipfile
+pip install tarfile
+pip install multiprocessing
 
 #time
 #collections
@@ -25,6 +34,10 @@ pip install theano
 #datetime
 #mlp_toolkits
 #itertools
+#sys
+#string
+#textwrap
+#cpython ...
 
 
 # IDEs
@@ -44,12 +57,23 @@ from __future__ import division, print_function, unicode_literals
 
 # Common imports
 import os
+import shutil
 #import pickle
 #import h5py
 #from sqlalchemy import create_engine 
 
 #import requests 
 #from bs4 import BeautifulSoup
+import re
+import glob
+import subprocess
+
+#import IPython
+#import line_profiler
+#import moving_averages
+#import builtins
+#import numba
+#import ctypes
 
 import numpy as np
 import pandas as pd
@@ -60,8 +84,13 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 #import sklearn.linear_model
 #from sklearn import linear_model
-
+import statsmodels as sm
+import econometrics as ec
 #import theano
+
+#import multiprocessing as mp
+#import joblib
+#import ipyparallel
 
 # Ignore useless warnings (see SciPy issue #5998)
 import warnings
