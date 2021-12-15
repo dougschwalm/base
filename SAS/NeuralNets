@@ -1,7 +1,55 @@
 
+Terminology
+Layers
+Perceptrons
+Activation Thresholds
+MLP = multilayer Perceptron  (vanilla = 3 layers, input, hidden, output)
+Node/neuron/Item = hypreplane
+Bias = distance of hyperplaine from origin
+Hemstitching = back and forth movement of gradient decent
+
 
 Missing Values
 
 Standardization
   STD, Range, Midrange
+      If some variables are more important than others, increaes their range or STD or both
+      The differences in range, etc, are espeically important with euclidan distance functions
+      
+Distance Functions
+
+Weight distribution:  Normal, Uniform (Cauchy)... Cauchy should be used sparingly
+
+Activation functions  (should permit a zero mean)
+  Sigmoidal, hyperbolic, Elliott, arctangent
+  
+
+Error Function/Choosing Criterion:  Estimation criterion, Lyapunov function
+  Often depends on target distribution
+  eg: OLS, MLE
+  MLE: Normal (NNET default for interval target), 
+          Poisson, count data
+          Gamma, variance proportional to square of mean, target representas an amount
+          Bernouli, Binary target 
+          Cauchy, Conditional modes instead of conditoinal means
+          Entropy (NNET default of rd nominal target)  proportion data
+  NOTE: if pdf is member of exponential family, min deviance is equivalent to max liklihood, and has better properties
+  Robust:  Huber M-estimation, Tukey bi-weight, Andrew's wave
+          Huber often prefered for unbounded interval targets with outliers
+          
+Optimization method  (determining the deltas = learning-rate-eta*gradient + momentum-term)  momentum = scale[0-1]*delta_t-1
+LBFGS Limited-Memory-Broyden_Fletcher_Goldfarb-Shanno gradient decent  (default for 1,2 hidden layers)
+Batch gradien decent (backpropgation) .. all obs of training data used
+Stochastic gradient decent (SGD) (online learning)  (default for 3+ hidden layers) .. uses approximate gradient on some data
+mini-batch gradient decent :  divide straining data in to small batches, uses single batrch for gradient, then moves to next batch
+
+Learning Rate:  too high, and although good initial learning, diverges later on.  Too low, and takes way to long
+Learning rate schedule:  start high, then move to low
+Annealing rate: alternative to Learning rate schedule:  eta -> eta/(1-beta*t)  t=#iterations performed, beta=annealing parameter (1.0e-6)
+
+
+Issues:
+Saturation 
+
+
 
